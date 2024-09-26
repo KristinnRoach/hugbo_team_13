@@ -17,11 +17,9 @@ public class User {
     private Long id;
     private String username;
     private String email;
-    private int level;
 
     public User(String username, String email) {
         this.username = username;
         this.email = email;
-        this.level = 1; // Default level for new users
     } 
 }
