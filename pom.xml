@@ -61,6 +61,12 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -68,9 +74,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-                   <mainClass>com.example.hugbo_team_13.HugboTeam13Application</mainClass>
-               </configuration>
 			</plugin>
 		</plugins>
 	</build>
