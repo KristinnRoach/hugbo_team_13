@@ -1,0 +1,38 @@
+/Users/kristinnroachgunnarsson/Desktop/Haust2024/hugbo_team_13/
+  ├─ .mvn/
+  │  └─ wrapper/
+  │     └─ maven-wrapper.properties
+  ├─].vscode/ (ignored)
+  ├─ src/
+  │  ├─ main/
+  │  │  ├─ java/
+  │  │  │  └─ com/
+  │  │  │     └─ example/
+  │  │  │        └─ hugbo_team_13/
+  │  │  │           ├─ controller/
+  │  │  │           │  └─ UserController.java
+  │  │  │           ├─ model/
+  │  │  │           ├─ persistence/
+  │  │  │           │  ├─ entity/
+  │  │  │           │  │  └─ User.java
+  │  │  │           │  └─ repository/
+  │  │  │           │     └─ UserRepository.java
+  │  │  │           ├─ service/
+  │  │  │           │  └─ UserService.java
+  │  │  │           └─ HugboTeam13Application.java
+  │  │  └─ resources/
+  │  │     ├─ static/
+  │  │     ├─ templates/
+  │  │     └─ application.properties
+  │  └─ test/
+  │     └─ java/
+  │        └─ com/
+  │           └─ example/
+  │              └─ hugbo_team_13/
+  │                 └─ HugboTeam13ApplicationTests.java
+  ├─]target/ (ignored)
+  ├─ .gitignore
+  ├─]HELP.md (ignored)
+  ├─ mvnw
+  ├─ mvnw.cmd
+  └─ pom.xml
