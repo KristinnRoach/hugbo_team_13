@@ -1,6 +1,7 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.persistence.entity.User;
+import com.example.hugbo_team_13.model.UserDTO;
+import com.example.hugbo_team_13.model.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,34 +20,38 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestParam String username, @RequestParam String email) {
-        User newUser = userService.createUser(username, email);
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserSignupDTO signupDTO) {
+
+        UserDTO userDTO = userService.createUser(signupDTO);
+
+        return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        List<UserDTO> users = userService.getAllUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        return userService.getUserById(id)
-                .map(existingUser -> {
-                    user.setId(id);
-                    User updatedUser = userService.updateUser(user);
-                    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
-                })
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+    // Todo: update to work with DTO's
+    
+    // @PutMapping("/{id}")
+    // public ResponseEntity<UserDTO> resetUser(@PathVariable Long id, @RequestBody UserSignupDTO signupDTO) {
+    //     return userService.getUserById(id)
+    //             .map(existingUser -> {
+    //                 user.setId(id);
+    //                 UserDTO updatedUser = userService.saveUser(user);
+    //                 return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    //             })
+    //             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    // }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
@@ -58,3 +63,8 @@ public class UserController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
+
+
+
+// import org.springframework.ui.Model;
+// Model model) { // model.addAttribute("userDTO", userDTO); // for testing in view - remove if not needed

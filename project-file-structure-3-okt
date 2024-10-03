@@ -1,8 +1,10 @@
-/Users/kristinnroachgunnarsson/Desktop/Haust2024/hugbo_team_13/
+project-file-structure-3-okt
   ├─ .mvn/
   │  └─ wrapper/
   │     └─ maven-wrapper.properties
   ├─].vscode/ (ignored)
+  ├─ Assigments/
+  │  └─ Assignment 1 Inception.pdf
   ├─ src/
   │  ├─ main/
   │  │  ├─ java/
@@ -10,11 +12,14 @@
   │  │  │     └─ example/
   │  │  │        └─ hugbo_team_13/
   │  │  │           ├─ controller/
+  │  │  │           │  ├─ GlobalExceptionHandler.java
   │  │  │           │  └─ UserController.java
   │  │  │           ├─ model/
+  │  │  │           │  ├─ UserDTO.java
+  │  │  │           │  └─ UserSignupDTO.java
   │  │  │           ├─ persistence/
   │  │  │           │  ├─ entity/
-  │  │  │           │  │  └─ User.java
+  │  │  │           │  │  └─ UserEntity.java
   │  │  │           │  └─ repository/
   │  │  │           │     └─ UserRepository.java
   │  │  │           ├─ service/
@@ -23,16 +28,21 @@
   │  │  └─ resources/
   │  │     ├─ static/
   │  │     ├─ templates/
+  │  │     ├─ appli.props.h2.kidnote
   │  │     └─ application.properties
   │  └─ test/
   │     └─ java/
   │        └─ com/
   │           └─ example/
   │              └─ hugbo_team_13/
+  │                 ├─ curl-test-commands.txt
   │                 └─ HugboTeam13ApplicationTests.java
   ├─]target/ (ignored)
+  ├─ .DS_Store
   ├─ .gitignore
   ├─]HELP.md (ignored)
   ├─ mvnw
   ├─ mvnw.cmd
-  └─ pom.xml
+  ├─ pom.xml
+  ├─ project-file-structure
+  └─ README.txt

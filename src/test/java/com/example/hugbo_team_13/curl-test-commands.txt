@@ -1,0 +1,39 @@
+
+# POST - CREATE USER
+
+curl -X POST \
+  http://localhost:8080/api/users \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "test-user",
+    "email": "test.user@ex.com",
+    "password": "qwerty123"
+  }'
+
+
+# GET - ALL USERS
+
+curl http://localhost:8080/api/users
+
+
+# GET - USER BY ID
+
+curl http://localhost:8080/api/users/{id}
+
+
+# PUT - REPLACE USER BY ID
+
+curl -X PUT \
+  http://localhost:8080/api/users \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "test-replace",
+    "email": "replace.user@ex.com",
+    "password": "replace123"
+  }'
+
+
+# DELETE - DELETE USER BY ID
+
+curl -X DELETE http://localhost:8080/api/users/{id}
+
