@@ -22,7 +22,12 @@ public class UserService {
 
     public UserDTO createUser(UserSignupDTO signupDTO) {
         // Todo: Validate input
-        if (userRepository.existsByUsername(signupDTO.getUsername())) {
+        String username = signupDTO.getUsername();
+        if (username.isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty");
+        }
+        if (userRepository.existsByUsername(username)) {
+            // logger.warn("Attempted to create account with existing username: {}", username);
             throw new RuntimeException("Username already exists");
         }
 
@@ -64,6 +69,10 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
     }
 
     private UserDTO convertToDTO(UserEntity user) {

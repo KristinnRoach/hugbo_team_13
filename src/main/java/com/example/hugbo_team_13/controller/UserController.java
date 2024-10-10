@@ -62,6 +62,13 @@ public class UserController {
                 })
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @DeleteMapping("/delete-all")
+    public ResponseEntity<Void> deleteAllUsers() {
+        userService.deleteAllUsers();
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+
 }
 
 
