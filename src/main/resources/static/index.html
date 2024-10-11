@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <title>Skill-Share</title>
+
+    <script src="js/main.js" type="module" defer></script>
+    <script src="js/endpoint-tests.js" type="module" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="login">
+        <form type="submit">
+          <label for="username">Username</label>
+          <input type="text" id="username" />
+          <label for="password">Password</label>
+          <input type="text" id="password" />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+      <div class="logo">
+        <img src="./assets/logo-v1.svg" alt="Skill-Share logo" />
+      </div>
+    </header>
+
+    <div class="flex-row">
+      <nav class="navbar">
+        <a href="">Events</a>
+        <a href="">Games</a>
+        <a href="">Ranking</a>
+        <a href="http://localhost:8080/api/users">Users</a>
+      </nav>
+    </div>
+
+    <main>
+      <div id="test-container" class="flex-column endpoint-tests">
+        <h2>Endpoint Tests</h2>
+        <p>( shortcuts: p: post g: get d: delete )</p>
+
+        <div class="test-buttons">
+          <button id="test-create-user">POST: Create user</button>
+          <button id="test-get-users">GET: all users</button>
+          <!-- <button id="test-get-user">GET: Get user by id</button>
+          <button id="test-delete-user">DELETE: Delete user by id</button>  -->
+          <button id="test-delete-all-users">DELETE: all users</button>
+
+          <!-- TODO:  -->
+          <!-- <button id="test-get-user-rankings">GET: Get user rankings</button>
+          <button id="test-get-events">GET: Get all events</button>
+          <button id="test-get-games">GET: Get all games</button> -->
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
