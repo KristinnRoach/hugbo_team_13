@@ -12,6 +12,9 @@ public class EventService {
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
-    
+
+    //public EventEntity getEventById(Long id) {
+    //  eventRepository.
+    //}
 
 }

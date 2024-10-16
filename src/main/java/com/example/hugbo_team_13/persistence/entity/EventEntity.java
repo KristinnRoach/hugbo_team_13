@@ -18,7 +18,7 @@ public class EventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Column(nullable = false)
     private String eventName;
 
@@ -31,7 +31,7 @@ public class EventEntity {
     @Column(nullable = false)
     private int duration;
 
-    public EventEntity(long id) {
-        this.id = id;
+    public EventEntity(String eventName) {
+        this.eventName = eventName;
     }
 }
