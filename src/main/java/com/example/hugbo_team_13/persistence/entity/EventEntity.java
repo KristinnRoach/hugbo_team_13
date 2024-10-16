@@ -1,6 +1,8 @@
 package com.example.hugbo_team_13.persistence.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,18 +22,19 @@ public class EventEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String eventName;
+    private String name;
 
     @Column(nullable = false)
-    private Date startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonProperty("startTime")
+    private Date startTime;
 
-    @Column(nullable = false)
-    private Date endDate;
+    @Column(nullable = false) // this is always saying endTime is null even when it isn't
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonProperty("endTime")
+    private Date endTime;
 
-    @Column(nullable = false)
-    private int duration;
-
-    public EventEntity(String eventName) {
-        this.eventName = eventName;
+    public EventEntity(String name) {
+        this.name = name;
     }
 }

@@ -37,3 +37,26 @@ curl -X PUT \
 
 curl -X DELETE http://localhost:8080/api/users/{id}
 
+# POST - CREATE EVENT
+
+curl -X POST \
+  http://localhost:8080/api/events \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "test-event2",
+    "startTime": "2024-10-16T10:30:00",
+    "endTime": "2024-10-16T12:30:00"
+
+  }'
+
+# GET - ALL EVENTS
+
+curl http://localhost:8080/api/events
+
+# GET - EVENT BY ID
+
+curl http://localhost:8080/api/events/{id}
+
+# DELETE - DELETE EVENT BY ID
+
+curl -X DELETE http://localhost:8080/api/events/{id}
