@@ -36,6 +36,7 @@ input[type='text'] {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  color: #91c2f8;
 }
 
 /* HEADER */
@@ -141,4 +142,14 @@ input[type='text'] {
 
   display: flex;
   justify-content: center;
+}
+
+.test-inputs-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 1rem;
+  
 }

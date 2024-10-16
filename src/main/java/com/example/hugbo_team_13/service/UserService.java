@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ArrayList;
 
+import jakarta.websocket.MessageHandler;
 import org.springframework.stereotype.Service;
 
 import com.example.hugbo_team_13.model.UserDTO;
@@ -58,6 +59,19 @@ public class UserService {
             userDTOs.add(convertToDTO(user));
         }
         return userDTOs;
+    }
+
+    public UserDTO updateUser(Long id, UserDTO newUserData) {
+        Optional<UserEntity> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
+        UserEntity user = userOptional.get();
+        user.setUsername(newUserData.getUsername());
+        user.setEmail(newUserData.getEmail());
+
+        UserEntity savedUser = userRepository.save(user);
+        return convertToDTO(savedUser);
     }
 
 

@@ -1,3 +1,6 @@
+
+// Todo: make separate for each method
+
 export async function httpRequest(
   url,
   method,
@@ -12,8 +15,16 @@ export async function httpRequest(
     },
   };
 
+
   if (data) {
-    options.body = JSON.stringify(data);
+    if (method === 'GET' || method === 'HEAD') {
+      // For GET and HEAD requests, append data to URL as query parameters
+      const params = new URLSearchParams(data);
+      url += `?${params.toString()}`;
+    } else {
+      // For other methods, add data to the body
+      options.body = JSON.stringify(data);
+    }
   }
 
   try {
