@@ -4,6 +4,7 @@ import com.example.hugbo_team_13.model.UserDTO;
 import com.example.hugbo_team_13.model.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,6 +85,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
+        byte[] image = userService.getProfilePicture(id);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+    }
 }
 
 
