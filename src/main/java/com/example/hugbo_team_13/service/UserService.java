@@ -1,15 +1,14 @@
 package com.example.hugbo_team_13.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.ArrayList;
-
-import org.springframework.stereotype.Service;
-
 import com.example.hugbo_team_13.model.UserDTO;
 import com.example.hugbo_team_13.model.UserSignupDTO;
 import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import com.example.hugbo_team_13.persistence.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -53,7 +52,7 @@ public class UserService {
     public List<UserDTO> getAllUsers() {
         List<UserEntity> userEntities = userRepository.findAll();
         List<UserDTO> userDTOs = new ArrayList<>();
-        
+
         for (UserEntity user : userEntities) {
             userDTOs.add(convertToDTO(user));
         }
@@ -84,5 +83,5 @@ public class UserService {
         user.setId(userDTO.getId());
         return user;
     }
-    
+
 }
