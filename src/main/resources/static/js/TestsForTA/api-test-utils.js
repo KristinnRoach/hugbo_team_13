@@ -1,7 +1,6 @@
 // api-test-utils.js
 
 import {httpRequest} from "../utility/fetch.js";
-import {getLocalStorage, setLocalStorage} from "../utility/localStorage-utils";
 
 const baseUrl = 'http://localhost:8080/api';
 
