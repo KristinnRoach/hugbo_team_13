@@ -3,22 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="favicon.svg">
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" href="css/component-styles/signup.css">
 
     <title>Skill-Share</title>
 
     <script src="js/main.js" type="module" defer></script>
-    <script src="js/endpoint-tests.js" type="module" defer></script>
+    <script src="js/TestsForTA/endpoint-tests.js" type="module" defer></script>
   </head>
   <body>
     <header class="header">
+
       <div class="login">
         <form>
           <label for="username">Username</label>
           <input type="text" id="username" />
           <label for="password">Password</label>
           <input type="text" id="password" />
-          <button type="submit">Login</button>
+          <button id="login-button" type="submit">Login</button>
         </form>
       </div>
 
@@ -36,30 +39,8 @@
       </nav>
     </div>
 
-    <main>
-      <div id="test-container" class="flex-column endpoint-tests">
-        <div id="loginComponent"></div>
-        <div id="V3EndpointTests"></div>
-
-        <h2>Endpoint Tests</h2>
-        <p>( shortcuts: p: post g: get d: delete )</p>
-
-        <div class="test-buttons">
-          <button id="test-create-user">POST: Create user</button>
-          <button id="test-get-users">GET: all users</button>
-          <!-- <button id="test-get-user">GET: Get user by id</button>
-          <button id="test-delete-user">DELETE: Delete user by id</button>  -->
-          <button id="test-delete-all-users">DELETE: all users</button>
-
-          <!-- TODO:  -->
-          <!-- <button id="test-get-user-rankings">GET: Get user rankings</button>
-          <button id="test-get-events">GET: Get all events</button>
-          <button id="test-get-games">GET: Get all games</button> -->
-        </div>
-      </div>
+    <main id="main">
     </main>
     <footer id="footerComponent"></footer>
-
-    <script type="module" src="js/main.js"></script>
   </body>
 </html>

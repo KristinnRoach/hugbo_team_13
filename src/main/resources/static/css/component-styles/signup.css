@@ -1,0 +1,23 @@
+/* styles/signup.css */
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: 20px auto;
+}
+
+.signup-form input,
+.signup-form button {
+    margin-bottom: 10px;
+    padding: 8px;
+}
+
+.error-message {
+    color: red;
+}
+
+#showSignup {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+}

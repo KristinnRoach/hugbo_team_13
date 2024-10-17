@@ -18,9 +18,10 @@ a {
   text-decoration: none;
 }
 
-input[type='text'] {
-  margin-right: 0.5rem;
+input {
+  margin: 0 0.5rem;
 }
+
 
 /* GENERAL CLASSES */
 
@@ -36,6 +37,7 @@ input[type='text'] {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  color: #91c2f8;
 }
 
 /* HEADER */
@@ -127,18 +129,44 @@ input[type='text'] {
   justify-content: center;
   align-items: center;
   column-gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
 }
 
 .endpoint-tests button {
+  margin: 1rem 0;
   background-color: #d9dfe0;
   padding: 0.5rem;
 }
 
 .test-response {
-  /* background-color: #d9dfe0; */
+   /*background-color: #d9dfe0;*/
   padding: 0.5rem;
-  width: 50%;
-
+  border: 1px solid lightgray;
   display: flex;
   justify-content: center;
+  width: 50vw;
+  height: 10vh;
+  overflow-y: auto;
+  overflow-x: scroll;
+  word-wrap: normal;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.test-inputs-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 1rem;
+  background-color: #d9dfe0;
+
+}
+
+.test-inputs-form input {
+  width: 100%;
 }

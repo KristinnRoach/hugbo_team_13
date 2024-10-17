@@ -1,0 +1,10 @@
+
+Web server failed to start. Port 8080 was already in use.
+Action: Identify and stop the process that's listening on port 8080
+
+Fix fyrir þetta ves á mac allavega:
+
+sudo lsof -i :8080
+kill PID
+
+

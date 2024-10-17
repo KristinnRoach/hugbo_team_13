@@ -4,10 +4,11 @@
  * Create an element with optional attributes and child elements
  * @param {string} tag - Tag name
  * @param {Object} [attributes={}] - Attributes to set on the element
+ * @param parent
  * @param {Array} [children=[]] - Child elements or text to append
  * @returns {Element}
  */
-export function createElement(tag, attributes = {}, children = []) {
+export function createElement(tag, attributes = {}, parent = null, children = []) {
     const element = document.createElement(tag);
 
     Object.entries(attributes).forEach(([key, value]) => {
@@ -29,6 +30,10 @@ export function createElement(tag, attributes = {}, children = []) {
             element.appendChild(child);
         }
     });
+
+    if (parent !== null && parent instanceof HTMLElement) {
+        parent.appendChild(element);
+    }
 
     return element;
 }

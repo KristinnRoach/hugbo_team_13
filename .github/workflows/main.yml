@@ -1,0 +1,31 @@
+name: Auto Pull Request
+on:
+  push:
+    branches:
+      - kid/*  # Trigger on pushes to kid/<branch-name>
+
+jobs:
+  auto-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: 'Auto Pull Request from ${{ github.ref }}'
+          body: 'Automatically created pull request'
+          base: 'main'  # The branch I want to merge into
+          branch: ${{ github.ref }}
+          
+
+      - name: Output Pull Request URL # Get the url to merge
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Pull Request created!"
+          echo "URL: ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "pull_request_url=${{ steps.cpr.outputs.pull-request-url }}" >> $GITHUB_OUTPUT
+
+      - name: No Pull Request Created  # if fails
+        if: ${{ !steps.cpr.outputs.pull-request-number }}
+        run: echo "No Pull Request was created"
