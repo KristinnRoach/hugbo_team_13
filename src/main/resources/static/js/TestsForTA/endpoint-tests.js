@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
       () => createTestEvent(
           eventNameInput.value,
           eventStartDateInput.value,
-          eventStartTimeInput.value,
           eventEndDateInput.value,
+          eventStartTimeInput.value,
           eventEndTimeInput.value
       ),
       'Event created', 'Failed to create event');

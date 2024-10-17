@@ -57,38 +57,28 @@ export function createTestGame(name, platform) {
  * @param {string} endTime - The end time of the event (HH:MM).
  * @returns {Object} An event object with name, startTime, and endTime.
  */
-export function createTestEvent(name, startDate, startTime, endDate, endTime) {
+export function createTestEvent(name, startDate, endDate, startTime,  endTime) {
     if(!(name && startDate && startTime && endDate && endTime)) {
         return false;
     }
 
-    const startDateTime = combineDateAndTime(startDate, startTime);
-    const endDateTime = combineDateAndTime(endDate, endTime);
+    // Ensure date is in YYYY-MM-DD format
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0];
+    };
+
+    // Ensure time is in HH:mm format
+    const formatTime = (timeStr) => {
+        const [hours, minutes] = timeStr.split(':');
+        return `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+    };
 
     return {
         name: name || 'testEvent' + Math.floor(Math.random() * 1000),
-        startTime: formatDate(startDateTime),
-        endTime: formatDate(endDateTime),
+        startDate: formatDate(startDate),
+        endDate: formatDate(endDate),
+        startTime: formatTime(startTime),
+        endTime: formatTime(endTime)
     };
-}
-
-/**
- * Combines a date string and a time string into a Date object.
- * @param {string} dateStr - Date string in YYYY-MM-DD format.
- * @param {string} timeStr - Time string in HH:MM format.
- * @returns {Date} Combined Date object.
- */
-function combineDateAndTime(dateStr, timeStr) {
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
-}
-
-/**
- * Formats a Date object to an ISO 8601 string
- * @param {Date} date - The date to format.
- * @returns {string} Formatted date string.
- */
-function formatDate(date) {
-    return date.toISOString();
 }

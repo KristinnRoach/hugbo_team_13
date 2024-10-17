@@ -6,6 +6,10 @@ import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +23,9 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public EventDTO createEvent(EventDTO eventDTO) {
+    public EventDTO createEvent(EventDTO dto) {
         // Todo: Validate input
-        String name = eventDTO.getName();
+        String name = dto.getName();
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Event name cannot be empty");
         }
@@ -31,11 +35,7 @@ public class EventService {
         }
 
         // Create EventEntity
-        EventEntity event = new EventEntity();
-        event.setName(eventDTO.getName());
-        event.setStartTime(eventDTO.getStartDate());
-        event.setEndTime(eventDTO.getEndDate());
-        
+        EventEntity event = convertToEntity(dto);
         EventEntity savedEvent = eventRepository.save(event);
 
         // Return a new EventDTO
@@ -62,8 +62,8 @@ public class EventService {
     }
 
 
-    public EventDTO saveEvent(EventDTO eventDTO) { // (save creates a new entity if ID is not set)
-        EventEntity event = convertToEntity(eventDTO);
+    public EventDTO saveEvent(EventDTO dto) { // (save creates a new entity if ID is not set)
+        EventEntity event = convertToEntity(dto);
         EventEntity savedEvent = eventRepository.save(event);
         return convertToDTO(savedEvent);
     }
@@ -76,14 +76,49 @@ public class EventService {
         eventRepository.deleteAll();
     }
 
-    private EventDTO convertToDTO(EventEntity event) {
-        return new EventDTO(event.getId(), event.getName(), event.getStartTime(), event.getEndTime());
+    private EventDTO convertToDTO(EventEntity entity) {
+        EventDTO dto = new EventDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setStartDate(entity.getStartDateTime().toLocalDate());
+        dto.setEndDate(entity.getEndDateTime().toLocalDate());
+        dto.setStartTime(entity.getStartDateTime().toLocalTime());
+        dto.setEndTime(entity.getEndDateTime().toLocalTime());
+        return dto;
     }
 
-    private EventEntity convertToEntity(EventDTO eventDTO) {
-        EventEntity event = new EventEntity(eventDTO.getName());
-        event.setId(eventDTO.getId());
-        return event;
+    private EventEntity convertToEntity(EventDTO dto) {
+        EventEntity entity = new EventEntity();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        entity.setStartDateTime(combineDateAndTime(dto.getStartDate(), dto.getStartTime()));
+        entity.setEndDateTime(combineDateAndTime(dto.getEndDate(), dto.getEndTime()));
+        return entity;
     }
 
+    private LocalDateTime combineDateAndTime(LocalDate date, LocalTime time) {
+        // LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_DATE);
+        // LocalTime time = LocalTime.parse(timeStr, DateTimeFormatter.ISO_TIME);
+        return LocalDateTime.of(date, time);
+    }
 }
+
+
+/*
+
+/**
+ * Combines a date string and a time string into a Date object.
+ * @param {string} dateStr - Date string in YYYY-MM-DD format.
+ * @param {string} timeStr - Time string in HH:MM format.
+ * @returns {Date} Combined Date object.
+ */
+
+/*
+function combineDateAndTime(dateStr, timeStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return new Date(year, month - 1, day, hours, minutes);
+}
+
+
+      */
