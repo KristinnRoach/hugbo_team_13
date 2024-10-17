@@ -1,7 +1,9 @@
 package com.example.hugbo_team_13.service;
 
 import com.example.hugbo_team_13.model.GameDTO;
+import com.example.hugbo_team_13.model.RankDTO;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
+import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,35 +20,28 @@ public class GameService {
     }
 
     public GameDTO createGame(GameDTO gameDTO) {
-        // Todo: Validate input
         String name = gameDTO.getName();
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Game name cannot be empty");
         }
         if (gameRepository.existsByName(name)) {
-            // logger.warn("Attempted to create game with existing game name: {}", name);
             throw new RuntimeException("Game name already exists");
         }
-
         // Create GameEntity
-        GameEntity game = new GameEntity();
-        game.setName(gameDTO.getName());
-        game.setPlatform(gameDTO.getPlatform());
-        game.setRanks(gameDTO.getRank());
-
+        GameEntity game = gameToEntity(gameDTO);
         GameEntity savedGame = gameRepository.save(game);
 
         // Return a new GameDTO
-        return convertToDTO(savedGame);
+        return gameToDto(savedGame);
     }
 
     public Optional<GameDTO> getGameById(Long id) {
-        return gameRepository.findById(id).map(this::convertToDTO);
+        return gameRepository.findById(id).map(this::gameToDto);
     }
 
     public GameDTO getGameByName(String name) {
         GameEntity game = gameRepository.findByName(name);
-        return game != null ? convertToDTO(game) : null;
+        return game != null ? gameToDto(game) : null;
     }
 
     public List<GameDTO> getAllGames() {
@@ -54,15 +49,15 @@ public class GameService {
         List<GameDTO> gameDTOs = new ArrayList<>();
 
         for (GameEntity game : gameEntities) {
-            gameDTOs.add(convertToDTO(game));
+            gameDTOs.add(gameToDto(game));
         }
         return gameDTOs;
     }
 
     public GameDTO saveGame(GameDTO gameDTO) { // (save creates a new entity if ID is not set)
-        GameEntity game = convertToEntity(gameDTO);
+        GameEntity game = gameToEntity(gameDTO);
         GameEntity savedGame = gameRepository.save(game);
-        return convertToDTO(savedGame);
+        return gameToDto(savedGame);
     }
 
     public void deleteGame(Long id) {
@@ -73,13 +68,40 @@ public class GameService {
         gameRepository.deleteAll();
     }
 
-    private GameDTO convertToDTO(GameEntity game) {
-        return new GameDTO(game.getId(), game.getName(), game.getPlatform(), game.getRanks());
+    private GameDTO gameToDto(GameEntity game) {
+        RankEntity rankEntity= game.getRankEntity();
+        RankDTO rankDTO = rankToDto(rankEntity);
+        return new GameDTO(game.getId(), game.getName(), game.getPlatform(), rankDTO);
     }
 
-    private GameEntity convertToEntity(GameDTO gameDTO) {
-        GameEntity game = new GameEntity(gameDTO.getName());
-        game.setId(gameDTO.getId());
+    private GameEntity gameToEntity(GameDTO dto) {
+        GameEntity game = new GameEntity();
+        game.setName(dto.getName());
+        game.setPlatform(dto.getPlatform());
+
+        if (dto.getRank() != null) {
+            game.setRankEntity(rankToEntity(dto.getRank()));
+        }
         return game;
+    }
+
+    private RankDTO rankToDto(RankEntity entity) {
+        if (entity == null ||entity.getId() == null) {
+            return null; // ERROR MSG
+        }
+        RankDTO dto = new RankDTO();
+        if (entity.getGame() != null) {
+            dto.setGame(gameToDto(entity.getGame()));
+        }
+        dto.setRanks(entity.getRanks());
+        return dto;
+    }
+
+    private RankEntity rankToEntity(RankDTO rankDTO) {
+        RankEntity dto = new RankEntity();
+        dto.setId(rankDTO.getId());
+        dto.setGame(gameToEntity(rankDTO.getGame()));
+        dto.setRanks(rankDTO.getRanks());
+        return dto;
     }
 }

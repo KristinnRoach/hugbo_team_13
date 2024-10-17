@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class GameEntity {
 
     @Id
@@ -23,11 +22,7 @@ public class GameEntity {
     @Column(nullable = false)
     private String platform;
 
-    @Column(nullable = false)
-    private String ranks;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private RankEntity rankEntity;
 
-
-    public GameEntity(String name) {
-        this.name = name;
-    }
 }

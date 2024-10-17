@@ -1,18 +1,22 @@
 package com.example.hugbo_team_13.model;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Date;
 
+@NoArgsConstructor
+@Getter
+@Setter
 public class EventDTO {
 
-    private Long id; // remove?
+    private Long id;
     private String name;
     private Date startTime;
     private Date endTime;
 
-
-    // Default NoArgs Constructor
-    public EventDTO() {
-    }
 
     // Constructor for creating DTO from entity (used when sending data to client)
     public EventDTO(Long id, String name, Date startTime, Date endTime) {
