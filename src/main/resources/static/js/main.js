@@ -4,8 +4,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   console.log('main.js loaded');
 
-  const loginBtn = document.getElementById("login-button");
+ /* const loginBtn = document.getElementById("login-button");
   loginBtn.addEventListener("click", () => {
       // login or sign up if doesnt exist
-  })
+  }) */
 });
