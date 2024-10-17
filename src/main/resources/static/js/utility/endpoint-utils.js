@@ -19,9 +19,10 @@ export function handleEndpointRequest(endpoint, method, getPayload = null) {
     });
 }
 
-export function createInputField(container = testInputForm, id, placeholder) {
+export function createInputField(container = testInputForm, id, placeholder, type = 'text') {
     const input = document.createElement('input');
     input.id = id;
+    input.type = type;
     input.placeholder = placeholder;
     container.appendChild(input);
     return input;
