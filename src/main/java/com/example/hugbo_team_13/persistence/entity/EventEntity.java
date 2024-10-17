@@ -29,7 +29,7 @@ public class EventEntity {
     @JsonProperty("startTime")
     private Date startTime;
 
-    @Column(nullable = false) // this is always saying endTime is null even when it isn't
+    @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @JsonProperty("endTime")
     private Date endTime;
