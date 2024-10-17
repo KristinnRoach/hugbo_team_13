@@ -22,7 +22,13 @@ public class GameEntity {
     @Column(nullable = false)
     private String platform;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "game", cascade = CascadeType.ALL)
     private RankEntity rankEntity;
 
+    public void setRankEntity(RankEntity rankEntity) {
+        this.rankEntity = rankEntity;
+        if (rankEntity != null) {
+            rankEntity.setGame(this);
+        }
+    }
 }

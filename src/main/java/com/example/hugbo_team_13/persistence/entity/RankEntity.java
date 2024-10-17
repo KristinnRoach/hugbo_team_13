@@ -19,7 +19,8 @@ public class RankEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
+
     @JoinColumn(name = "game_id")
     private GameEntity game;
 
