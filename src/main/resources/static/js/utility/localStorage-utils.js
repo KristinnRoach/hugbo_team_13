@@ -3,7 +3,7 @@
  * @param {string} key - The key to set in localStorage.
  * @param {any} value - The value to stringify and store.
  */
-function setLocalStorage(key, value) {
+export function setLocalStorage(key, value) {
     try {
         localStorage.setItem(key, JSON.stringify(value));
     } catch (error) {
@@ -16,7 +16,7 @@ function setLocalStorage(key, value) {
  * @param {string} key - The key to retrieve from localStorage.
  * @returns {any|null} The parsed value from localStorage, or null if not found or on error.
  */
-function getLocalStorage(key) {
+export function getLocalStorage(key) {
     try {
         const data = localStorage.getItem(key);
         return JSON.parse(data);
