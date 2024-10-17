@@ -1,61 +1,31 @@
 package com.example.hugbo_team_13.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class EventDTO {
 
     private Long id;
     private String name;
-    private Date startTime;
-    private Date endTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-
-    // Constructor for creating DTO from entity (used when sending data to client)
-    public EventDTO(Long id, String name, Date startTime, Date endTime) {
+    // Parameterized constructor
+    public EventDTO(Long id, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         this.id = id;
         this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
-
     }
-
-    // Getters
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Date getStartDate() {
-        return startTime;
-    }
-
-    public Date getEndDate() {
-        return endTime;
-    }
-
-
-    // Setters - no setter for id !!
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
 }

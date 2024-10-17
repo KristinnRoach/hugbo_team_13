@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "event")
@@ -25,16 +26,10 @@ public class EventEntity {
     private String name;
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @JsonProperty("startTime")
-    private Date startTime;
+    private LocalDateTime startDateTime;
+
 
     @Column(nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @JsonProperty("endTime")
-    private Date endTime;
+    private LocalDateTime endDateTime;
 
-    public EventEntity(String name) {
-        this.name = name;
-    }
 }
