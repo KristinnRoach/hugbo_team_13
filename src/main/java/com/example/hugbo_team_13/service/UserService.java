@@ -4,9 +4,7 @@ import com.example.hugbo_team_13.model.UserDTO;
 import com.example.hugbo_team_13.model.UserSignupDTO;
 import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import com.example.hugbo_team_13.persistence.repository.UserRepository;
-
 import org.springframework.stereotype.Service;
-import jakarta.websocket.MessageHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +86,23 @@ public class UserService {
     public void deleteAllUsers() {
         userRepository.deleteAll();
     }
+
+    // Update Profile picture
+    public void updateProfilePicture(Long id, byte[] profilePicture) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setProfilePicture(profilePicture);
+        userRepository.save(user);
+    }
+
+    // Get Profile picture
+    public byte[] getProfilePicture(Long id, byte[] profilePicture) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getProfilePicture();
+    }
+
 
     private UserDTO convertToDTO(UserEntity user) {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail());

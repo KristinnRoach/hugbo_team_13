@@ -6,7 +6,9 @@ import com.example.hugbo_team_13.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,8 +76,15 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-}
+    @PostMapping("/{id}/profile-picture")
+    public ResponseEntity<Void> uploadProfilePicture(@PathVariable Long id,
+                                                     @RequestParam("file") MultipartFile file) throws IOException {
+        byte[] imageBytes = file.getBytes();
+        userService.updateProfilePicture(id, imageBytes);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
+}
 
 
 // import org.springframework.ui.Model;
