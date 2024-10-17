@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Entity
 @Table(name = "app_user")
 @Getter
@@ -25,9 +28,18 @@ public class UserEntity {
     @Column(nullable = false)
     private String passwordHash;
 
+
+    @ElementCollection
+    @CollectionTable(name = "user_game_rankings", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyJoinColumn(name = "game_id")
+    @Column(name = "rank")
+    private Map<GameEntity, String> gameRankings = new HashMap<>();
+
+  
     @Column
     @Lob
     private byte[] profilePicture;
+
 
     public UserEntity(String username, String email) {
         this.username = username;

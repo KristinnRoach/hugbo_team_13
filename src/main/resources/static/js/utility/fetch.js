@@ -27,16 +27,40 @@ export async function httpRequest(
     }
   }
 
+  // Only add Content-Type if we're sending data // todo: TEMPFIX
+  if (data && method !== 'GET' && method !== 'HEAD') {
+    options.headers['Content-Type'] = 'application/json';
+  }
+
   try {
+    console.log('ReQuest type:', {
+      url,
+      method,
+      headers: options.headers,
+      body: options.body
+    });
+
     const response = await fetch(url, options);
-    const contentType = response.headers.get('content-type');
-    const isJson = contentType?.includes('application/json');
-    const responseData = isJson ? await response.json() : await response.text();
+    // Get the content type of the response
+    const contentType = response.headers.get("content-type");
+
+    let responseData;
+    if (contentType && contentType.includes("application/json")) {
+
+      // If it's JSON, parse it
+      responseData = await response.json();
+    } else {
+      // If it's not JSON, get it as text
+      responseData = await response.text();
+    }
+
+    console.log('RESPONSE type', contentType);
 
     return {
       ok: response.ok,
       status: response.status,
       data: responseData,
+      // contentType: contentType
     };
   } catch (error) {
     console.error('Network error:', error);
@@ -48,3 +72,9 @@ export async function httpRequest(
     };
   }
 }
+
+
+// const contentType = {'Content-Type': 'application/json'};
+// const contentType = response.headers.get('content-type');
+// const isJson = contentType?.includes('application/json');
+// const responseData = isJson ? await response.json() : await response.text();

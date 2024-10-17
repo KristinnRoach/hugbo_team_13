@@ -1,6 +1,7 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.model.GameDTO;
+import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-
+@RequestMapping("/api/games")
 public class GameController {
     private final GameService gameService;
 
@@ -18,10 +19,10 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @PostMapping
-    public ResponseEntity<GameDTO> createGame(@RequestBody GameDTO gameEntity) {
+    @PostMapping // todo: bæta við allstaðar --> ("/create")
+    public ResponseEntity<GameDTO> createGame(@RequestBody GameDTO dto) {
 
-        GameDTO gameDTO = gameService.createGame(gameEntity);
+        GameDTO gameDTO = gameService.createGame(dto);
         return new ResponseEntity<>(gameDTO, HttpStatus.CREATED);
     }
 
