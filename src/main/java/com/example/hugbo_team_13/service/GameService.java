@@ -5,59 +5,71 @@ import com.example.hugbo_team_13.model.RankDTO;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
+import com.example.hugbo_team_13.persistence.repository.RankRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final RankRepository rankRepository;
 
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, RankRepository rankRepository) {
         this.gameRepository = gameRepository;
+        this.rankRepository = rankRepository;
     }
 
     public GameDTO createGame(GameDTO gameDTO) {
         String name = gameDTO.getName();
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Game name cannot be empty");
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Missing game name");
         }
         if (gameRepository.existsByName(name)) {
-            throw new RuntimeException("Game name already exists");
+            throw new RuntimeException("A game with the name of: " + name + " already exists");
         }
         // Create GameEntity
-        GameEntity game = gameToEntity(gameDTO);
+        GameEntity game = createGameEntity(gameDTO);
         GameEntity savedGame = gameRepository.save(game);
 
         // Return a new GameDTO
-        return gameToDto(savedGame);
+        return convertGameToDto(savedGame);
     }
 
     public Optional<GameDTO> getGameById(Long id) {
-        return gameRepository.findById(id).map(this::gameToDto);
+        return gameRepository.findById(id).map(this::convertGameToDto);
     }
 
     public GameDTO getGameByName(String name) {
         GameEntity game = gameRepository.findByName(name);
-        return game != null ? gameToDto(game) : null;
+        return game != null ? convertGameToDto(game) : null;
     }
 
     public List<GameDTO> getAllGames() {
         List<GameEntity> gameEntities = gameRepository.findAll();
-        List<GameDTO> gameDTOs = new ArrayList<>();
-
-        for (GameEntity game : gameEntities) {
-            gameDTOs.add(gameToDto(game));
-        }
-        return gameDTOs;
+        return gameEntities.stream().map(this::convertGameToDto).collect(Collectors.toList());
     }
 
-    public GameDTO saveGame(GameDTO gameDTO) { // (save creates a new entity if ID is not set)
-        GameEntity game = gameToEntity(gameDTO);
-        GameEntity savedGame = gameRepository.save(game);
-        return gameToDto(savedGame);
+
+    public boolean saveGame(GameDTO gameDTO) {
+        String name = gameDTO.getName();
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Missing game name");
+        }
+
+        if (!gameRepository.existsByName(name)) {
+            throw new IllegalArgumentException("No game found with name: " + name);
+        }
+
+        GameEntity existingGame = gameRepository.findByName(name);
+        if (existingGame == null) { return false; }
+
+        gameRepository.save(existingGame);
+        return true;
     }
 
     public void deleteGame(Long id) {
@@ -68,40 +80,50 @@ public class GameService {
         gameRepository.deleteAll();
     }
 
-    private GameDTO gameToDto(GameEntity game) {
+    private GameDTO convertGameToDto(GameEntity game) {
         RankEntity rankEntity= game.getRankEntity();
-        RankDTO rankDTO = rankToDto(rankEntity);
+        RankDTO rankDTO = rankEntity != null ? convertRankToDto(rankEntity) : null;
         return new GameDTO(game.getId(), game.getName(), game.getPlatform(), rankDTO);
     }
 
-    private GameEntity gameToEntity(GameDTO dto) {
+    private GameEntity createGameEntity(GameDTO dto) {
         GameEntity game = new GameEntity();
         game.setName(dto.getName());
         game.setPlatform(dto.getPlatform());
 
         if (dto.getRank() != null) {
-            game.setRankEntity(rankToEntity(dto.getRank()));
+            RankEntity rankEntity = new RankEntity();
+            rankEntity.setRanks(dto.getRank().getRanks());
+            game.setRankEntity(rankEntity);
         }
         return game;
     }
 
-    private RankDTO rankToDto(RankEntity entity) {
-        if (entity == null ||entity.getId() == null) {
-            return null; // ERROR MSG
+    public RankDTO createRankForGame(Long gameId, RankDTO rankDTO) {
+        GameEntity game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with id: " + gameId));
+
+        if (game.getRankEntity() != null) {
+            throw new IllegalStateException("Game already has a ranking system");
         }
-        RankDTO dto = new RankDTO();
-        if (entity.getGame() != null) {
-            dto.setGame(gameToDto(entity.getGame()));
-        }
-        dto.setRanks(entity.getRanks());
-        return dto;
+
+        RankEntity rankEntity = createRankEntity(rankDTO);
+        rankEntity.setGame(game);
+        game.setRankEntity(rankEntity);
+
+        rankEntity = rankRepository.save(rankEntity);
+        gameRepository.save(game);  // might not be necessary due to cascading, but safer to do it explicitly
+
+        return convertRankToDto(rankEntity);
     }
 
-    private RankEntity rankToEntity(RankDTO rankDTO) {
-        RankEntity dto = new RankEntity();
-        dto.setId(rankDTO.getId());
-        dto.setGame(gameToEntity(rankDTO.getGame()));
-        dto.setRanks(rankDTO.getRanks());
-        return dto;
+    private RankEntity createRankEntity(RankDTO dto) {
+        RankEntity rankEntity = new RankEntity();
+        rankEntity.setRanks(dto.getRanks());
+        return rankEntity;
+    }
+
+    private RankDTO convertRankToDto(RankEntity entity) {
+        return new RankDTO(entity.getId(), entity.getGame().getId(), entity.getRanks());
     }
 }

@@ -1,7 +1,6 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.model.GameDTO;
-import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,12 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @PostMapping // todo: bæta við allstaðar --> ("/create")
+    @GetMapping("/api/games/test")
+    public String test() {
+        throw new RuntimeException("Test exception occurred!");
+    }
+
+    @PostMapping
     public ResponseEntity<GameDTO> createGame(@RequestBody GameDTO dto) {
 
         GameDTO gameDTO = gameService.createGame(dto);

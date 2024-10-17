@@ -17,7 +17,6 @@ public class UserDTO {
     private String email;
     private byte[] profilePicture;
 
-
     // Parameterized constructor
     public UserDTO(Long id, String username, String email) {
         this.id = id;

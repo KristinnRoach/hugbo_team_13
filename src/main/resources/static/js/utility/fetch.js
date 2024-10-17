@@ -1,6 +1,30 @@
 
 // Todo: make separate for each method
 
+export async function post(url, data, options = {}) {
+    try {
+      const defaultOptions = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      };
+
+      const response = await fetch(url, { ...defaultOptions, ...options });
+
+      if (!response.ok) {
+        console.warn(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error in postData:', error);
+      throw error;
+    }
+}
+
+
 export async function httpRequest(
   url,
   method,
@@ -60,7 +84,6 @@ export async function httpRequest(
       ok: response.ok,
       status: response.status,
       data: responseData,
-      // contentType: contentType
     };
   } catch (error) {
     console.error('Network error:', error);

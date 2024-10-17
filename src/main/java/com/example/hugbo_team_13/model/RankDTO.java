@@ -1,6 +1,7 @@
 package com.example.hugbo_team_13.model;
 
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,18 +9,13 @@ import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
 
-@Getter@Setter
-@NoArgsConstructor
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class RankDTO {
-
     private Long id;
-    private GameDTO game;
+    private Long gameId;
     private Map<Integer, String> ranks = new HashMap<>();
-    //private int numRanks;
-
-    public RankDTO(GameDTO game) {
-        this.game = game;
-    }
-
-
 }
+
+// private int numRanks;
+// subRanks ?
