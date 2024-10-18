@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="favicon.svg">
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <link rel="stylesheet" href="css/component-styles/signup.css">
+
+    <title>Skill-Share</title>
+
+    <script src="js/main.js" type="module" defer></script>
+    <script src="js/TestsForTA/endpoint-tests.js" type="module" defer></script>
+  </head>
+  <body>
+    <header class="header">
+
+      <div class="login">
+        <form>
+          <label for="username">Username</label>
+          <input type="text" id="username" />
+          <label for="password">Password</label>
+          <input type="text" id="password" />
+          <button id="login-button" type="submit">Login</button>
+        </form>
+      </div>
+
+      <div class="logo">
+        <img src="./assets/logo-v1.svg" alt="Skill-Share logo" />
+      </div>
+    </header>
+
+    <div class="flex-row">
+      <nav class="navbar">
+        <a href="">Events</a>
+        <a href="">Games</a>
+        <a href="">Ranking</a>
+        <a href="http://localhost:8080/api/users">Users</a>
+      </nav>
+    </div>
+
+    <main id="main">
+    </main>
+    <footer id="footerComponent"></footer>
+  </body>
+</html>

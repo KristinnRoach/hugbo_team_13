@@ -1,84 +1,67 @@
 
-// Todo: make separate for each method
-
-export async function post(url, data, options = {}) {
-    try {
-      const defaultOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      };
-
-      const response = await fetch(url, { ...defaultOptions, ...options });
-
-      if (!response.ok) {
-        console.warn(`HTTP error! status: ${response.status}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error in postData:', error);
-      throw error;
-    }
-}
-
 
 export async function httpRequest(
-  url,
-  method,
-  data = null,
-  customHeaders = {}
+    url,
+    method,
+    data = null,
+    queryParams = null,
+    config = {}
 ) {
-  const options = {
-    method: method,
+
+  const request = {
+    method: method.toUpperCase(),
     headers: {
-      'Content-Type': 'application/json',
-      ...customHeaders,
+      ...config.headers,
     },
+    ...config
   };
 
-
-  if (data) {
-    if (method === 'GET' || method === 'HEAD') {
-      // For GET and HEAD requests, append data to URL as query parameters
-      const params = new URLSearchParams(data);
-      url += `?${params.toString()}`;
-    } else {
-      // For other methods, add data to the body
-      options.body = JSON.stringify(data);
-    }
+  // Set Content-Type only for methods that typically have a body
+  if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+    request.headers['Content-Type'] = request.headers['Content-Type'] || 'application/json';
   }
 
-  // Only add Content-Type if we're sending data // todo: TEMPFIX
-  if (data && method !== 'GET' && method !== 'HEAD') {
-    options.headers['Content-Type'] = 'application/json';
+  // Handle query parameters for all methods
+  if (queryParams) {
+    const queryString = new URLSearchParams(queryParams).toString();
+    url += (url.includes('?') ? '&' : '?') + queryString;
+  }
+
+  // Handle method-specific behaviors
+  switch (request.method) {
+    case 'GET':
+    case 'HEAD':
+      // TODO: TEST below for get & head // For GET and HEAD, merge data into query parameters if both are provided
+      if (data) {
+        const additionalQueryString = new URLSearchParams(data).toString();
+        url += (url.includes('?') ? '&' : '?') + additionalQueryString;
+      }
+      delete request.body; // Remove body if accidentally added
+      break;
+    case 'POST':
+    case 'PUT':
+    case 'PATCH':
+      if (data && Object.keys(data).length > 0) {
+        request.body = JSON.stringify(data);
+      }
+      break;
+    // case 'DELETE': // nothing special?
+    default:
+      throw new Error(`Unsupported HTTP method: ${request.method}`);
   }
 
   try {
-    console.log('ReQuest type:', {
-      url,
-      method,
-      headers: options.headers,
-      body: options.body
-    });
-
-    const response = await fetch(url, options);
-    // Get the content type of the response
+    const response = await fetch(url, request);
     const contentType = response.headers.get("content-type");
 
     let responseData;
     if (contentType && contentType.includes("application/json")) {
-
       // If it's JSON, parse it
       responseData = await response.json();
     } else {
       // If it's not JSON, get it as text
       responseData = await response.text();
     }
-
-    console.log('RESPONSE type', contentType);
 
     return {
       ok: response.ok,
@@ -91,13 +74,16 @@ export async function httpRequest(
     return {
       ok: false,
       status: 0,
-      error: error.message,
+      errorMsg: error.message,
+      error: error,
     };
   }
 }
 
 
-// const contentType = {'Content-Type': 'application/json'};
-// const contentType = response.headers.get('content-type');
-// const isJson = contentType?.includes('application/json');
-// const responseData = isJson ? await response.json() : await response.text();
+// Convenience wrappers for common HTTP methods
+export const getData = (url, queryParams, config) => httpRequest(url, 'GET', null, queryParams, config);
+export const postData = (url, data, queryParams, config) => httpRequest(url, 'POST', data, queryParams, config);
+export const putData = (url, data, queryParams, config) => httpRequest(url, 'PUT', data, queryParams, config);
+export const patchData = (url, data, queryParams, config) => httpRequest(url, 'PATCH', data, queryParams, config);
+export const deleteData = (url, data, queryParams, config) => httpRequest(url, 'DELETE', data, queryParams, config);
