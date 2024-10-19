@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "app_user") 
 @Getter @Setter @NoArgsConstructor
-public class UserEntity {
+public class UserEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO) // eða GenerationType.IDENTITY ?
@@ -44,5 +46,4 @@ public class UserEntity {
         this.username = username;
         this.email = email;
     }
-
 }

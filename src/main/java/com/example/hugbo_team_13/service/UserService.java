@@ -103,6 +103,15 @@ public class UserService {
         return user.getProfilePicture();
     }
 
+    public UserEntity login(UserEntity user){
+        UserDTO exists = getUserByUsername(user.getUsername());
+        if(exists != null){
+            if(convertToEntity(exists).getPasswordHash().equals(user.getPasswordHash())){
+                return convertToEntity(exists);
+            }
+        }
+        return null;
+    }
 
     private UserDTO convertToDTO(UserEntity user) {
         return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
@@ -113,5 +122,6 @@ public class UserService {
         user.setId(userDTO.getId());
         return user;
     }
+
 
 }

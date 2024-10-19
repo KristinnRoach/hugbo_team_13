@@ -2,10 +2,14 @@ package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.model.UserDTO;
 import com.example.hugbo_team_13.model.UserSignupDTO;
+import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import com.example.hugbo_team_13.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -89,6 +93,47 @@ public class UserController {
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id) {
         byte[] image = userService.getProfilePicture(id);
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+    }
+
+    @RequestMapping(value = "/userHome", method = RequestMethod.GET)
+    public String userhomeGET(HttpSession session, Model model){
+        UserEntity sessionUser = (UserEntity) session.getAttribute("LoggedInUser");
+        if(sessionUser != null){
+            model.addAttribute("LoggedInUser", sessionUser);
+            return "userHome";
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value="/login", method = RequestMethod.GET)
+    public String loginGET(UserEntity user){
+        return "login";
+    }
+
+    @RequestMapping(value="/login", method = RequestMethod.POST)
+    public String loginPOST(UserEntity user, BindingResult result, Model model, HttpSession session){
+        if(result.hasErrors()){
+            return "login";
+        }
+        UserEntity exists = userService.login(user);
+        if(exists != null){
+            session.setAttribute("LoggedInUser", exists);
+            model.addAttribute("LoggedInUser", exists);
+            return "userHome";
+        }
+        return "redirect:";
+    }
+
+    @RequestMapping(value="/signup", method = RequestMethod.POST)
+    public String signupPOST(UserEntity user, BindingResult result, Model model){
+        if(result.hasErrors()){
+            return "redirect:/signup";
+        }
+        UserDTO exists = userService.getUserByUsername(user.getUsername());
+        if(exists == null){
+            userService.saveUser(exists);
+        }
+        return "redirect:/";
     }
 }
 
