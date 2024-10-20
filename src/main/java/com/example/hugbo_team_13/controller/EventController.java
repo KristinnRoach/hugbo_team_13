@@ -1,6 +1,6 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.model.EventDTO;
+import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

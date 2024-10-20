@@ -1,7 +1,7 @@
 package com.example.hugbo_team_13.service;
 
 
-import com.example.hugbo_team_13.model.EventDTO;
+import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

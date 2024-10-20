@@ -1,4 +1,4 @@
-package com.example.hugbo_team_13.model;
+package com.example.hugbo_team_13.dto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

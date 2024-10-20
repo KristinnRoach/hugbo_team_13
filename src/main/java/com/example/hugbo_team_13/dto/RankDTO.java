@@ -1,6 +1,5 @@
-package com.example.hugbo_team_13.model;
+package com.example.hugbo_team_13.dto;
 
-import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

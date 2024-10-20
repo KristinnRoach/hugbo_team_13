@@ -1,7 +1,7 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.model.UserDTO;
-import com.example.hugbo_team_13.model.UserSignupDTO;
+import com.example.hugbo_team_13.dto.UserDTO;
+import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

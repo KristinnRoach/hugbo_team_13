@@ -1,6 +1,6 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.model.GameDTO;
+import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

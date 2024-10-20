@@ -1,7 +1,7 @@
 package com.example.hugbo_team_13.service;
 
-import com.example.hugbo_team_13.model.GameDTO;
-import com.example.hugbo_team_13.model.RankDTO;
+import com.example.hugbo_team_13.dto.GameDTO;
+import com.example.hugbo_team_13.dto.RankDTO;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
