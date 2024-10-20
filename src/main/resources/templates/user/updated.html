@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>User Updated</title>
+</head>
+<body>
+<div th:fragment="section">
+
+<h1>User Updated Successfully</h1>
+<p>The user <span th:text="${user.username}">username</span> has been updated.</p>
+<a th:href="@{/users/{id}(id=${user.id})}">View User Details</a>
+<a href="/user/list">Back to User List</a>
+</div>
+</body>
+</html>

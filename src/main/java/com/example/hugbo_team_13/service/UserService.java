@@ -40,7 +40,7 @@ public class UserService {
      */
     public UserDTO createUser(UserSignupDTO signupDTO) {
         String username = signupDTO.getUsername();
-        if (username.isEmpty()) {
+        if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Username cannot be empty");
         }
         if (userRepository.existsByUsername(username)) {
@@ -175,7 +175,7 @@ public class UserService {
      * @return the corresponding UserDTO.
      */
     private UserDTO convertToDTO(UserEntity user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getProfilePicture());
     }
 
     /**
