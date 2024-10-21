@@ -1,12 +1,14 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.EventDTO;
+import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.service.EventService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/event")
@@ -19,16 +21,36 @@ public class EventController {
         this.eventService = eventService;
     }
 
+
+    @GetMapping("/list")
+    public String getEvents(Model model) {
+        List<EventDTO> events = eventService.getAllEvents();
+        model.addAttribute("events", events);
+        return "event/list";
+    }
+
+
     @GetMapping("/create")
-    public String getCreateEvent(Model model) {
+    public String getEventForm(Model model) {
         model.addAttribute("event", new EventDTO());
         return "event/create";
     }
 
-    @GetMapping("/list")
-    public String getEvents(Model model) {
-        model.addAttribute("events", eventService.getAllEvents());
-        return "event/list";
+    @PostMapping("/create")
+    public String createEvent(@ModelAttribute("event") EventDTO eventDTO) {
+        eventService.createEvent(eventDTO);
+        return "redirect:/event/list";
     }
+
+    @PostMapping("/{id}/delete")
+    public String deleteEvent(@PathVariable("id") long id) {
+        Optional<EventDTO> event = eventService.getEventById(id);
+        if (event.isEmpty()) {
+            return "event/notFound";
+        }
+        eventService.deleteEvent(id);
+        return "redirect:/event/list";
+    }
+
 
 }

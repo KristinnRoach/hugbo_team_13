@@ -4,12 +4,14 @@ import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserLoginDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -55,7 +57,7 @@ public class UserController {
             UserDTO userDTO = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
             if (userDTO != null) {
                 session.setAttribute("loggedInUser", userDTO);
-                // model.addAttribute("loggedInUser", userDTO); // unnecessary?
+                model.addAttribute("loggedInUser", userDTO); // unnecessary?
                 return "redirect:/user/" + userDTO.getId();
             } else {
                 model.addAttribute("error", "Invalid username or password");
@@ -69,7 +71,9 @@ public class UserController {
 
 
     @PostMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpServletRequest request, HttpSession session, SessionStatus sessionStatus) {
+        session.setAttribute("loggedInUser", null);
+        sessionStatus.setComplete();
         session.invalidate();
         return "redirect:/";
     }

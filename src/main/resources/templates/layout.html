@@ -1,55 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, section)">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="/favicon.svg">
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
-    <link rel="stylesheet" href="/css/component-styles/signup.css">
-    <link rel="stylesheet" type="text/css" href="/css/component-styles/login.css" />
-
-
-    <title th:replace="${title}">Skill-Share</title>
-</head>
-
-<body>
-
-<header class="header">
-
-    <div class="user-auth">
-        <th:block th:if="${session.loggedInUser}">
-            <span th:text="${'Welcome, ' + session.loggedInUser.username}"></span>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit">Logout</button>
-            </form>
-        </th:block>
-        <th:block th:unless="${session.loggedInUser}">
-            <a href="/user/login">Login</a>
-            <a href="/user/signup">Sign Up</a>
-            <!-- todo: use the header-login instead -->
-            <!--  <th:block th:replace="~{header-login :: header-login}"></th:block> -->
-        </th:block>
-    </div>
-
-    <div class="logo">
-        <img src="/assets/logo-v1.svg" alt="Skill-Share logo" />
-    </div>
-
-</header>
-
-<div class="flex-row">
-    <nav class="navbar">
-        <a th:href="@{/event/list}">Events</a>
-        <a th:href="@{/game/list}">Games</a>
-        <a th:href="@{/rank/list}">Ranking</a>
-        <a th:href="@{/user/list}">User</a>
-    </nav>
-</div>
-
-<main id="main">
-    <th:block th:replace="${section}"></th:block>
-</main>
-
-<footer id="footerComponent"></footer>
-</body>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/favicon.svg">
+  <link rel="stylesheet" type="text/css" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/component-styles/signup.css">
+  <link rel="stylesheet" type="text/css" href="/css/component-styles/login.css">
+  <title th:replace="${title}">Skill-Share</title>
+ </head>
+ <body>
+  <header class="header">
+   <div class="user-auth">
+    <th:block th:if="${session.loggedInUser}">
+     <span th:text="${'Welcome, ' + session.loggedInUser.username}"></span>
+     <form th:action="@{/user/logout}" method="post">
+      <button type="submit">Logout</button>
+     </form>
+    </th:block> <th:block th:unless="${session.loggedInUser}">
+     <a href="/user/login">Login</a>
+     <a href="/user/signup">Sign Up</a> <!-- todo: use the header-login instead --> <!--  <th:block th:replace="~{header-login :: header-login}"></th:block> -->
+    </th:block>
+   </div>
+   <div class="logo">
+    <img src="/assets/logo-v1.svg" alt="Skill-Share logo">
+   </div>
+  </header>
+  <div class="flex-row">
+   <nav class="navbar">
+    <a th:href="@{/event/list}">Events</a> <a th:href="@{/game/list}">Games</a> <a th:href="@{/rank/list}">Ranking</a> <a th:href="@{/user/list}">User</a>
+   </nav>
+  </div>
+  <main id="main">
+   <th:block th:replace="${section}"></th:block>
+  </main>
+  <footer id="footerComponent"></footer>
+ </body>
 </html>

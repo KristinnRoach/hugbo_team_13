@@ -9,7 +9,7 @@
 <h1 class="page-title">User Created Successfully</h1>
 <p>Welcome, <span th:text="${session.loggedInUser.username}">username</span>!</p>
 <p>Your account has been created with the email: <span th:text="${session.loggedInUser.email}">email</span></p>
-<a href="/user/list">Back to User List</a>
+<a th:href="@{/user/list}">Browse Users</a>
 </div>
 </body>
 </html>

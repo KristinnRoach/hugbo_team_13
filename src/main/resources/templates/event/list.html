@@ -6,8 +6,9 @@
 <body>
 <div class="flex-column" th:fragment="section">
 
-    <a th:href="@{/event/create}">Create Event</a>
-
+    <th:block th:if="${session.loggedInUser != null}">
+        <a th:href="@{/event/create}">Create Event</a>
+    </th:block>
 
     <h1 class="page-title">Events List</h1>
     <table>

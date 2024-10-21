@@ -11,7 +11,7 @@
         <div>
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" required>
-            <span th:if="${#fields.hasErrors('username')}" th:errors="*{name}"></span>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
         </div>
         <div>
             <label for="startDate">Start Date:</label>
@@ -25,30 +25,27 @@
         </div>
 
         <div>
-            <label for="startTime">Start Date:</label>
-            <input type="date" id="startTime" th:field="*{startTime}" required>
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" th:field="*{startTime}" required>
             <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
         </div>
         <div>
-            <label for="endTime">End Date:</label>
-            <input type="date" id="endTime" th:field="*{endTime}" required>
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" th:field="*{endTime}" required>
             <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></span>
         </div>
 
+
         <div>
-            <label for="password">Password:</label>
-            <input type="password" id="password" th:field="*{password}" required>
-            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-        </div>
-        <div>
-            <button type="submit">Sign Up</button>
+            <button type="submit">Create Event</button>
         </div>
     </form>
-
-    <div th:if="${error}" class="error-message">
-        <p th:text="${error}"></p>
-    </div>
 
 </div>
 </body>
 </html>
+
+  <!--  <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+    -->

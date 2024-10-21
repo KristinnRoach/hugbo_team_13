@@ -1,28 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+
 <head>
-    <title>Welcome to Skill-Share</title>
-</head>
-<body>
-<section class="flex-column">
-
-    <h1 th:text="${#ctx.session.size()}"/>
-
+  <title>Welcome to Skill-Share</title>
+ </head>
+ <body>
+  <section class="flex-column">
     <th:block th:unless="${session.loggedInUser != null}">
-        <h1 class="page-title">Welcome to Skill-Share!</h1>
-        <p>Please <a href="user/login">log in</a> or <a href="user/signup">sign up</a> to continue</p>
-    </th:block>
-
-    <th:block th:if="${session.loggedInUser != null}">
-        <h1 class="page-title" th:if="${session.loggedInUser.getUsername() != null}">
-            Welcome back
-            <span th:text="${session.loggedInUser.getUsername()}">username</span>
-        </h1>
-
-        <!-- Upcoming events etc... dashboard -->
-
-    </th:block>
-
-</section>
-</body>
+    <h1 class="page-title">Welcome to Skill-Share!</h1>
+    <p>Please <a href="user/login">log in</a> or <a href="user/signup">sign up</a> to continue</p>
+   </th:block> <th:block th:if="${session.loggedInUser != null}">
+      <h1 class="page-title" th:text="'Welcome back, ' + ${session.loggedInUser.username}"/>
+    <!-- <h1 class="page-title" th:if="${session.loggedInUser != null}">Welcome back, <span th:text="${session.loggedInUser.username}"></span></h1> -->   <!-- Upcoming events etc... dashboard -->
+   </th:block>
+  </section>
+ </body>
 </html>
