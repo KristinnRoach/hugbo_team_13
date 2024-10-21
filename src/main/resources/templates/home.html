@@ -5,8 +5,23 @@
 </head>
 <body>
 <section class="flex-column">
-    <h1 class="page-title">Welcome to Skill-Share</h1>
-    <p>Please log in or sign up to continue</p>
+
+    <h1 th:text="${#ctx.session.size()}"/>
+
+    <th:block th:unless="${session.loggedInUser != null}">
+        <h1 class="page-title">Welcome to Skill-Share!</h1>
+        <p>Please <a href="user/login">log in</a> or <a href="user/signup">sign up</a> to continue</p>
+    </th:block>
+
+    <th:block th:if="${session.loggedInUser != null}">
+        <h1 class="page-title" th:if="${session.loggedInUser.getUsername() != null}">
+            Welcome back
+            <span th:text="${session.loggedInUser.getUsername()}">username</span>
+        </h1>
+
+        <!-- Upcoming events etc... dashboard -->
+
+    </th:block>
 
 </section>
 </body>

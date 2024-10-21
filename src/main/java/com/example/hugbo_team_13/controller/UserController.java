@@ -22,6 +22,7 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/user")
+@SessionAttributes("loggedInUser")
 public class UserController {
 
     private final UserService userService;
@@ -54,6 +55,7 @@ public class UserController {
             UserDTO userDTO = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
             if (userDTO != null) {
                 session.setAttribute("loggedInUser", userDTO);
+                // model.addAttribute("loggedInUser", userDTO); // unnecessary?
                 return "redirect:/user/" + userDTO.getId();
             } else {
                 model.addAttribute("error", "Invalid username or password");
@@ -75,14 +77,14 @@ public class UserController {
 
 
     @PostMapping("/signup")
-    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, HttpSession session, BindingResult bindingResult, Model model) {
+    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, BindingResult bindingResult,  HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
             return "user/signup";
         }
         try {
             UserDTO userDTO = userService.createUser(signupDTO);
-            model.addAttribute("user", userDTO);
             session.setAttribute("loggedInUser", userDTO);
+            // model.addAttribute("loggedInUser", userDTO); // unnecessary?
             return "redirect:/user/created";
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred: " + e.getMessage());
@@ -90,19 +92,12 @@ public class UserController {
         }
     }
 
-
-        /*
-    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserSignupDTO signupDTO) {
-        try {
-            UserDTO userDTO = userService.createUser(signupDTO);
-            return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    } */
+    @GetMapping("/created")
+    public String showCreated(HttpSession session, Model model) {
+        UserDTO userDTO = (UserDTO) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", userDTO);
+        return "user/created";
+    }
 
     @GetMapping("/list")
     public String getAllUsers(Model model) {

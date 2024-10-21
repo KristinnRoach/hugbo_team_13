@@ -155,28 +155,6 @@ public class EventService {
      * @return the combined LocalDateTime object.
      */
     private LocalDateTime combineDateAndTime(LocalDate date, LocalTime time) {
-        // LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ISO_DATE);
-        // LocalTime time = LocalTime.parse(timeStr, DateTimeFormatter.ISO_TIME);
         return LocalDateTime.of(date, time);
     }
 }
-
-
-/*
-
-/**
- * Combines a date string and a time string into a Date object.
- * @param {string} dateStr - Date string in YYYY-MM-DD format.
- * @param {string} timeStr - Time string in HH:MM format.
- * @returns {Date} Combined Date object.
- */
-
-/*
-function combineDateAndTime(dateStr, timeStr) {
-    const [year, month, day] = dateStr.split('-').map(Number);
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return new Date(year, month - 1, day, hours, minutes);
-}
-
-
-      */

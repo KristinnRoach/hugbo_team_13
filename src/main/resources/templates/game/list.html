@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Events List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">Events List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Game Name</th>
+            <th>Platform</th>
+            <!--
+            <th>About</th>
+            <th>Actions</th>
+            -->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="game : ${games}">
+            <td th:text="${game.id}">ID</td>
+            <td th:text="${game.name}">Game Name</td>
+            <td th:text="${game.platform}">Platform</td>
+
+            <!--
+            <td>
+                <a th:href="@{/event/{id}(id=${event.id})}">View</a>
+
+                <a th:href="@{/event/{id}/update(id=${event.id})}">Edit</a>
+                <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post" style="display: inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+            -->
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Events List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+    <a th:href="@{/event/create}">Create Event</a>
+
+
+    <h1 class="page-title">Events List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Event Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="event : ${events}">
+            <td th:text="${event.id}">ID</td>
+            <td th:text="${event.name}">Username</td>
+            <td th:text="${event.startDate}">Start Date</td>
+            <td th:text="${event.endDate}">End Date</td>
+            <td th:text="${event.startTime}">Start Time</td>
+            <td th:text="${event.endTime}">End Time</td>
+
+            <td>
+                <a th:href="@{/event/{id}(id=${event.id})}">View</a>
+                <!-- todo: only admin can edit or delete -->
+                <a th:href="@{/event/{id}/update(id=${event.id})}">Edit</a>
+                <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post" style="display: inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

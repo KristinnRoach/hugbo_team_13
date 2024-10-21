@@ -15,7 +15,11 @@
     <img th:if="${user.profilePicture}" th:src="@{/user/{id}/profile-picture(id=${user.id})}" alt="Profile Picture" />
     <p th:unless="${user.profilePicture}">No profile picture available</p>
 </div>
-<a th:href="@{/user/{id}/update(id=${user.id})}">Edit User</a>
+
+    <th:block th:if="${session.loggedInUser.getId() == user.id}">
+    <a th:href="@{/user/{id}/update(id=${user.id})}">Edit User</a>
+    </th:block>
+
 <a href="/">Back to homepage</a>
 </div>
 </body>

@@ -23,14 +23,37 @@ table {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+
+  width: fit-content;
+  border-collapse: collapse;
 
   margin: 0 auto;
   padding: 1rem;
 }
 
+th, td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+th {
+  background-color: #dfdfdf;
+}
+
 
 /* GENERAL CLASSES */
 
+.form {
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 .flex-column {
   margin: 0 auto;

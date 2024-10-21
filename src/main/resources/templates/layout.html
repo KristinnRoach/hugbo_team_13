@@ -6,6 +6,8 @@
     <link rel="icon" type="image/x-icon" href="/favicon.svg">
     <link rel="stylesheet" type="text/css" href="/css/styles.css" />
     <link rel="stylesheet" href="/css/component-styles/signup.css">
+    <link rel="stylesheet" type="text/css" href="/css/component-styles/login.css" />
+
 
     <title th:replace="${title}">Skill-Share</title>
 </head>
@@ -13,30 +15,34 @@
 <body>
 
 <header class="header">
- <!--   <th:block th:replace="${login}"></th:block> -->
 
     <div class="user-auth">
         <th:block th:if="${session.loggedInUser}">
             <span th:text="${'Welcome, ' + session.loggedInUser.username}"></span>
-            <a href="/user/logout">Logout</a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
         </th:block>
         <th:block th:unless="${session.loggedInUser}">
             <a href="/user/login">Login</a>
             <a href="/user/signup">Sign Up</a>
+            <!-- todo: use the header-login instead -->
+            <!--  <th:block th:replace="~{header-login :: header-login}"></th:block> -->
         </th:block>
     </div>
 
     <div class="logo">
         <img src="/assets/logo-v1.svg" alt="Skill-Share logo" />
     </div>
+
 </header>
 
 <div class="flex-row">
     <nav class="navbar">
-        <a href="event/list">Events</a>
-        <a href="">Games</a>
-        <a href="">Ranking</a>
-        <a href="/user/list">User</a>
+        <a th:href="@{/event/list}">Events</a>
+        <a th:href="@{/game/list}">Games</a>
+        <a th:href="@{/rank/list}">Ranking</a>
+        <a th:href="@{/user/list}">User</a>
     </nav>
 </div>
 
