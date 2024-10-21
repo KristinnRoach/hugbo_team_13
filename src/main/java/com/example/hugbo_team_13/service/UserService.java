@@ -48,10 +48,19 @@ public class UserService {
         }
 
         UserEntity user = new UserEntity(signupDTO.getUsername(), signupDTO.getEmail());
-        user.setPasswordHash(signupDTO.getPassword()); // Password should be hashed (Todo)
+        user.setPassword(signupDTO.getPassword()); // Password should be hashed (Todo)
 
         UserEntity savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
+    }
+
+    // todo: security
+    public UserDTO login(String username, String password) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return convertToDTO(user);
+        }
+        return null;
     }
 
     /**

@@ -1,5 +1,5 @@
-/* styles/signup.css */
-.signup-form {
+/* styles/login.css */
+.login-form {
     background-color: lightgray;
 
     margin: 0 auto;
@@ -14,17 +14,17 @@
     width: 20rem;
 }
 
-.signup-form input,
-.signup-form button {
+.login-form input,
+.login-form button {
     margin-bottom: 10px;
     padding: 8px;
 }
 
-.signup-form label {
+.login-form label {
     width: 4rem;
 }
 
-.signup-form input {
+.login-form input {
     width: 12rem;
 }
 
@@ -32,7 +32,7 @@
     color: #730909;
 }
 
-#showSignup {
+#showLogin {
     display: block;
     margin: 20px auto;
     padding: 10px 20px;

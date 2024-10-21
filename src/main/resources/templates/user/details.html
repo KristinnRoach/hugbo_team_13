@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>User Details</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
 </head>
 <body>
 <div th:fragment="section">
 
-<h1>User Details</h1>
-<div>
+<h1 class="page-title">User Details</h1>
+<div class="flex-column">
     <p><strong>ID:</strong> <span th:text="${user.id}">ID</span></p>
     <p><strong>Username:</strong> <span th:text="${user.username}">Username</span></p>
     <p><strong>Email:</strong> <span th:text="${user.email}">Email</span></p>
@@ -15,7 +16,7 @@
     <p th:unless="${user.profilePicture}">No profile picture available</p>
 </div>
 <a th:href="@{/user/{id}/update(id=${user.id})}">Edit User</a>
-<a href="/user/list">Back to User List</a>
+<a href="/">Back to homepage</a>
 </div>
 </body>
 </html>

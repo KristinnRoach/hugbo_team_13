@@ -8,20 +8,22 @@
     <link rel="stylesheet" href="/css/component-styles/signup.css">
 
     <title th:replace="${title}">Skill-Share</title>
-
-    <script src="/js/main.js" type="module" defer></script>
- <!--   <script src="/js/TestsForTA/endpoint-tests.js" type="module" defer></script> -->
 </head>
+
 <body>
+
 <header class="header">
-    <div class="login">
-        <form>
-            <label for="username">Username</label>
-            <input type="text" id="username" />
-            <label for="password">Password</label>
-            <input type="text" id="password" />
-            <button id="login-button" type="submit">Login</button>
-        </form>
+ <!--   <th:block th:replace="${login}"></th:block> -->
+
+    <div class="user-auth">
+        <th:block th:if="${session.loggedInUser}">
+            <span th:text="${'Welcome, ' + session.loggedInUser.username}"></span>
+            <a href="/user/logout">Logout</a>
+        </th:block>
+        <th:block th:unless="${session.loggedInUser}">
+            <a href="/user/login">Login</a>
+            <a href="/user/signup">Sign Up</a>
+        </th:block>
     </div>
 
     <div class="logo">
@@ -31,10 +33,10 @@
 
 <div class="flex-row">
     <nav class="navbar">
-        <a href="">Events</a>
+        <a href="event/list">Events</a>
         <a href="">Games</a>
         <a href="">Ranking</a>
-        <a href="">User</a>
+        <a href="/user/list">User</a>
     </nav>
 </div>
 

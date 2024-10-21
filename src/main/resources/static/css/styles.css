@@ -18,15 +18,23 @@ a {
   text-decoration: none;
 }
 
-input {
-  margin: 0 0.5rem;
-}
+table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
+  margin: 0 auto;
+  padding: 1rem;
+}
 
 
 /* GENERAL CLASSES */
 
+
 .flex-column {
+  margin: 0 auto;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,6 +42,8 @@ input {
 }
 
 .flex-row {
+  margin: 0 auto;
+
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -41,17 +51,42 @@ input {
   color: #91c2f8;
 }
 
+.page-title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin: 1rem auto 0 auto;
+}
+
 /* HEADER */
 
-.header,
-.login,
-.navbar {
+.header{
   margin: 0 auto;
+  padding-bottom: 1rem;
   background-color: #acbff1;
+  max-height: 16vh;
+  width: 100%;
+}
+
+.user-auth {
+  margin: 0 auto;
+  padding-top: 0.5rem;
+  padding-right: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+}
+.login-input {
+  margin: 0 0.5rem;
 }
 
 .logo {
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
 
   display: flex;
   justify-content: center;
@@ -59,6 +94,9 @@ input {
 
   width: 40%;
   height: 40%;
+
+  max-height: 10vh;
+
 }
 
 .logo img {

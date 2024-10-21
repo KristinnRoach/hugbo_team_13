@@ -2,13 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>User Signup</title>
-
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
     <link rel="stylesheet" type="text/css" href="/css/component-styles/signup.css" />
 </head>
 <body>
-<div th:fragment="section">
-    <h1>User Signup</h1>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">User Signup</h1>
     <form class="signup-form" method="post" th:action="@{/user/signup}" th:object="${signupDTO}">
         <div>
             <label for="username">Username:</label>

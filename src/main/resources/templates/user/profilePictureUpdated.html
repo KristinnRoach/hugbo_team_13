@@ -4,9 +4,9 @@
     <title>Profile Picture Updated</title>
 </head>
 <body>
-<div th:fragment="section">
+<div class="flex-column" th:fragment="section">
 
-<h1>Profile Picture Updated</h1>
+<h1 class="page-title">Profile Picture Updated</h1>
 <p th:text="${message}">Update message</p>
 <a th:href="@{/users/{id}(id=${id})}">Back to User Details</a>
 </div>

@@ -1,11 +1,11 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.UserDTO;
+import com.example.hugbo_team_13.dto.UserLoginDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,16 +36,54 @@ public class UserController {
         return "user/signup";
     }
 
+    @GetMapping("/login")
+    public String showLoginForm(Model model) {
+        model.addAttribute("loginDTO", new UserLoginDTO());
+        return "user/login";
+    }
+
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute("loginDTO") UserLoginDTO loginDTO,
+                        BindingResult bindingResult,
+                        HttpSession session,
+                        Model model) {
+        if (bindingResult.hasErrors()) {
+            return "user/login";
+        }
+        try {
+            UserDTO userDTO = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
+            if (userDTO != null) {
+                session.setAttribute("loggedInUser", userDTO);
+                return "redirect:/user/" + userDTO.getId();
+            } else {
+                model.addAttribute("error", "Invalid username or password");
+                return "user/login";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "An error occurred: " + e.getMessage());
+            return "user/login";
+        }
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
+
 
     @PostMapping("/signup")
-    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, BindingResult bindingResult, Model model) {
+    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, HttpSession session, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "user/signup";
         }
         try {
             UserDTO userDTO = userService.createUser(signupDTO);
             model.addAttribute("user", userDTO);
-            return "user/created";
+            session.setAttribute("loggedInUser", userDTO);
+            return "redirect:/user/created";
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred: " + e.getMessage());
             return "user/signup";
@@ -107,13 +145,13 @@ public class UserController {
             return "user/notFound";
         }
         userService.deleteUser(id);
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @PostMapping("/delete-all")
     public String deleteAllUsers() {
         userService.deleteAllUsers();
-        return "redirect:/users";
+        return "redirect:/";
     }
 
     @PostMapping("/{id}/profile-picture")

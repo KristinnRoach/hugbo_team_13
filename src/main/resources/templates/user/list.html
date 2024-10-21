@@ -1,10 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>User List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
 </head>
 <body>
-<div th:fragment="section">
-    <h1>User List</h1>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">User List</h1>
     <table>
         <thead>
         <tr>

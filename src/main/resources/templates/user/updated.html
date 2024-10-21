@@ -4,9 +4,9 @@
     <title>User Updated</title>
 </head>
 <body>
-<div th:fragment="section">
+<div class="flex-column" th:fragment="section">
 
-<h1>User Updated Successfully</h1>
+<h1 class="page-title" >User Updated Successfully</h1>
 <p>The user <span th:text="${user.username}">username</span> has been updated.</p>
 <a th:href="@{/users/{id}(id=${user.id})}">View User Details</a>
 <a href="/user/list">Back to User List</a>

@@ -2,10 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>User Created</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
 </head>
 <body>
-<div th:fragment="section">
-<h1>User Created Successfully</h1>
+<div class="flex-column" th:fragment="section">
+<h1 class="page-title">User Created Successfully</h1>
 <p>Welcome, <span th:text="${user.username}">username</span>!</p>
 <p>Your account has been created with the email: <span th:text="${user.email}">email</span></p>
 <a href="/user/list">Back to User List</a>

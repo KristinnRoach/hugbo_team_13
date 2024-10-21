@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Entity class representing a user in the application.
@@ -48,7 +45,7 @@ public class UserEntity {
      * Cannot be null.
      */
     @Column(nullable = false)
-    private String passwordHash;
+    private String password;
 
     /**
      * A map of game rankings associated with the user.
@@ -79,4 +76,5 @@ public class UserEntity {
         this.username = username;
         this.email = email;
     }
+
 }
