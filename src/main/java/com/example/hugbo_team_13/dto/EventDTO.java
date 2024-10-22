@@ -1,5 +1,6 @@
 package com.example.hugbo_team_13.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class EventDTO {
 
     /**
@@ -46,22 +48,4 @@ public class EventDTO {
      */
     private LocalTime endTime;
 
-    /**
-     * Parameterized constructor for creating an EventDTO with all properties.
-     *
-     * @param id        The unique identifier for the event.
-     * @param name      The name of the event.
-     * @param startDate The start date of the event.
-     * @param endDate   The end date of the event.
-     * @param startTime The start time of the event.
-     * @param endTime   The end time of the event.
-     */
-    public EventDTO(Long id, String name, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        this.id = id;
-        this.name = name;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
 }

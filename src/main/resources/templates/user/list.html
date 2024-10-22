@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>User List</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">User List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">ID</td>
+            <td th:text="${user.username}">Username</td>
+            <td th:text="${user.email}">Email</td>
+            <td>
+                <a th:href="@{/user/{id}(id=${user.id})}">View</a>
+
+                <th:block th:if="${user.id == session.loggedInUser.id}">
+                    <a th:href="@{/user/{id}/update(id=${user.id})}">Edit</a>
+
+                    <form th:action="@{/user/{id}/delete(id=${user.id})}" method="post" style="display: inline;">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button style="color: darkred" type="submit">Delete Account</button>
+                    </form>
+                </th:block>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

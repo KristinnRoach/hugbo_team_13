@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('main.js loaded');
 });
 
-
+/*
 const routes = {
   '': 'home',
   'events': 'events',
@@ -61,7 +61,7 @@ function fetchEvents() {
       })
       .catch(error => console.error('Error fetching events:', error));
 }
-
+*/
 
 /* const loginBtn = document.getElementById("login-button");
  loginBtn.addEventListener("click", () => {

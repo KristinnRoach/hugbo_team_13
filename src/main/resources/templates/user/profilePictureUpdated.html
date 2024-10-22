@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Profile Picture Updated</title>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+<h1 class="page-title">Profile Picture Updated</h1>
+<p th:text="${message}">Update message</p>
+<a th:href="@{/users/{id}(id=${id})}">Back to User Details</a>
+</div>
+</body>
+</html>

@@ -40,7 +40,7 @@ public class UserService {
      */
     public UserDTO createUser(UserSignupDTO signupDTO) {
         String username = signupDTO.getUsername();
-        if (username.isEmpty()) {
+        if (username == null || username.isEmpty()) {
             throw new IllegalArgumentException("Username cannot be empty");
         }
         if (userRepository.existsByUsername(username)) {
@@ -48,10 +48,19 @@ public class UserService {
         }
 
         UserEntity user = new UserEntity(signupDTO.getUsername(), signupDTO.getEmail());
-        user.setPasswordHash(signupDTO.getPassword()); // Password should be hashed (Todo)
+        user.setPassword(signupDTO.getPassword()); // Password should be hashed (Todo)
 
         UserEntity savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
+    }
+
+    // todo: security
+    public UserDTO login(String username, String password) {
+        UserEntity user = userRepository.findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return convertToDTO(user);
+        }
+        return null;
     }
 
     /**
@@ -175,7 +184,7 @@ public class UserService {
      * @return the corresponding UserDTO.
      */
     private UserDTO convertToDTO(UserEntity user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail());
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getProfilePicture());
     }
 
     /**

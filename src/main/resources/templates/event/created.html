@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Event Created</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">Event Created Successfully</h1>
+    <p>Congratz with your new event, <span th:text="${session.loggedInUser.username}">username</span>!</p>
+    <a th:href="@{/event/{id}/(id=${event.id})}">View Event</a>
+    <a th:href="@{/event/list}">Browse Events</a>
+</div>
+</body>
+</html>

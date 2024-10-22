@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Create Event</title>
+    <link rel="stylesheet" type="text/css" href="/css/component-styles/signup.css" />
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">Create Event</h1>
+    <form class="form" method="post" th:action="@{/event/create}" th:object="${event}">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        </div>
+        <div>
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" th:field="*{startDate}" required>
+            <span th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></span>
+        </div>
+        <div>
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" th:field="*{endDate}" required>
+            <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
+        </div>
+
+        <div>
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" th:field="*{startTime}" required>
+            <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
+        </div>
+        <div>
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" th:field="*{endTime}" required>
+            <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></span>
+        </div>
+
+
+        <div>
+            <button type="submit">Create Event</button>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
+
+  <!--  <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+    -->

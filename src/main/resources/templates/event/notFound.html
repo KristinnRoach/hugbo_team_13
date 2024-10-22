@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Event Not Found</title>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+<h1 class="page-title">Event Not Found</h1>
+<p>Sorry, the requested event could not be found.</p>
+<a href="/user/list">Browse Events</a>
+</div>
+</body>
+</html>

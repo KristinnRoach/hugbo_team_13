@@ -18,9 +18,10 @@ public class UserDTO {
     private byte[] profilePicture;
 
     // Parameterized constructor
-    public UserDTO(Long id, String username, String email) {
+    public UserDTO(Long id, String username, String email, byte[] profilePicture) {
         this.id = id;
         this.username = username;
         this.email = email;
+        this.profilePicture = profilePicture;
     }
 }

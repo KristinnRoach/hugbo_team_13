@@ -10,10 +10,19 @@ curl -X POST \
     "password": "qwerty123"
   }'
 
+  curl -X POST \
+    http://localhost:8080/users \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "username": "test-user",
+      "email": "test.user@ex.com",
+      "password": "qwerty123"
+    }'
+
 
 # GET - ALL USERS
 
-curl http://localhost:8080/api/users
+curl http://localhost:8080/api/user/list
 
 
 # GET - USER BY ID
