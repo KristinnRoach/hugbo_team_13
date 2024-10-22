@@ -12,13 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long id;
+    private String id;
     private String username;
     private String email;
     private byte[] profilePicture;
 
     // Parameterized constructor
-    public UserDTO(Long id, String username, String email, byte[] profilePicture) {
+    public UserDTO(String id, String username, String email, byte[] profilePicture) {
         this.id = id;
         this.username = username;
         this.email = email;

@@ -36,11 +36,13 @@
             <td>
                 <a th:href="@{/event/{id}(id=${event.id})}">View</a>
                 <!-- todo: only admin can edit or delete -->
+                <th:block th:if="${session.loggedInUser != null}">
                 <a th:href="@{/event/{id}/update(id=${event.id})}">Edit</a>
-                <form th:action="@{/event/{id}/delete(id=${event.id})}" method="post" style="display: inline;">
+                <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
                     <input type="hidden" name="_method" value="DELETE"/>
                     <button style="color: darkred" type="submit">Delete Event</button>
                 </form>
+                </th:block>
             </td>
         </tr>
         </tbody>
