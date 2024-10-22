@@ -1,9 +1,8 @@
 package com.example.hugbo_team_13.controller;
 
 
-import com.example.hugbo_team_13.dto.EventDTO;
+import com.example.hugbo_team_13.dto.GameCreateDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
-import com.example.hugbo_team_13.service.EventService;
 import com.example.hugbo_team_13.service.GameService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +23,7 @@ public class GameController {
 
     @GetMapping("/create")
     public String getCreateGame(Model model) {
-        model.addAttribute("game", new GameDTO());
+        model.addAttribute("game", new GameCreateDTO());
         return "game/create";
     }
 

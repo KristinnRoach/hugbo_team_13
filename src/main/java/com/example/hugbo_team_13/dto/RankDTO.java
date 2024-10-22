@@ -22,7 +22,6 @@ public class RankDTO {
      * Unique identifier for the rank system.
      */
     private Long id;
-
     /**
      * The ID of the game associated with this ranking system.
      */

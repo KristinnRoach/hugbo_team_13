@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Add a game</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <script src="/js/main.js"></script>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">Add a new game:</h1>
+    <form class="signup-form" method="post" th:action="@{/game/create}" th:object="${game}">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        </div>
+        <div>
+            <label for="platform">Platform:</label>
+            <input type="text" id="platform" th:field="*{platform}" required>
+            <span th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></span>
+        </div>
+        <div>
+            <label for="skill">Skill levels:</label>
+            <div id="levels" th:object="${rank}">
+                <input type="text" id="skill" th:field="*{skill}" required>
+            </div>
+            <span th:if="${#fields.hasErrors('skill')}" th:errors="*{skill}"></span>
+            <button onclick="addForm()">+</button><button onclick="removeForm()">-</button>
+        </div>
+        <div>
+            <button type="submit">Add Game</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>
