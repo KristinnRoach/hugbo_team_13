@@ -36,8 +36,8 @@ public class EventController {
     }
 
     @PostMapping("/create")
-    public String createEvent(@ModelAttribute("event") EventDTO eventDTO) {
-        eventService.createEvent(eventDTO);
+    public String createEvent(@ModelAttribute("event") EventDTO event) {
+        eventService.createEvent(event);
         return "redirect:/event/list";
     }
 

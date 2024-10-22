@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/user")
-// @SessionAttributes("loggedInUser")
+@SessionAttributes("loggedInUser")
 public class UserController {
 
     private final UserService userService;
@@ -53,11 +54,11 @@ public class UserController {
             return "user/login";
         }
         try {
-            UserDTO userDTO = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
-            if (userDTO != null) {
-                session.setAttribute("loggedInUser", userDTO);
-                model.addAttribute("loggedInUser", userDTO); // unnecessary?
-                return "redirect:/user/" + userDTO.getId();
+            UserDTO user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
+            if (user != null) {
+                session.setAttribute("loggedInUser", user);
+                // model.addAttribute("loggedInUser", user); // unnecessary?
+                return "redirect:/user/" + user.getId();
             } else {
                 model.addAttribute("error", "Invalid username or password");
                 return "user/login";
@@ -75,9 +76,9 @@ public class UserController {
             return "user/signup";
         }
         try {
-            UserDTO userDTO = userService.createUser(signupDTO);
-            session.setAttribute("loggedInUser", userDTO);
-            // model.addAttribute("loggedInUser", userDTO); // unnecessary?
+            UserDTO user = userService.createUser(signupDTO);
+            session.setAttribute("loggedInUser", user);
+            // model.addAttribute("loggedInUser", user); // unnecessary?
             return "redirect:/user/created";
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred: " + e.getMessage());
@@ -87,8 +88,8 @@ public class UserController {
 
     @GetMapping("/created")
     public String showCreated(HttpSession session, Model model) {
-        UserDTO userDTO = (UserDTO) session.getAttribute("loggedInUser");
-        model.addAttribute("loggedInUser", userDTO);
+        UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+        model.addAttribute("loggedInUser", user);
         return "user/created";
     }
 
@@ -110,16 +111,29 @@ public class UserController {
         }
     }
 
+    @GetMapping("/edit")
+    public String getUpdateForm(Model model, HttpSession session) {
+        UserDTO loggedInUser = (UserDTO) session.getAttribute("loggedInUser");
+        Optional<UserDTO> user = userService.getUserById(loggedInUser.getId());
+
+        if (user.isPresent()) {
+            model.addAttribute("user", user.get());
+            return "editProfile";
+        } else {
+            return "user/notFound"; // todo: userNotLoggedIn
+        }
+    }
+
     @PutMapping("/{id}")
-    public String updateProfile(@PathVariable String id, @ModelAttribute UserDTO userDTO, Model model) {
+    public String updateProfile(@PathVariable String id, @ModelAttribute UserDTO user, HttpSession session, Model model) {
         try {
             Optional<UserDTO> existingUser = userService.getUserById(id);
             if (existingUser.isEmpty()) {
                 return "user/notFound";
             }
-            UserDTO updatedUser = userService.updateUser(id, userDTO);
-            model.addAttribute("user", updatedUser);
-            return "user/profile";
+            UserDTO updatedUser = userService.updateUser(id, user);
+            session.setAttribute("loggedInUser", updatedUser);
+            return "redirect:/user/" + updatedUser.getId();
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";
@@ -127,15 +141,18 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable String id, HttpSession session, SessionStatus sessionStatus) {
+    public String deleteUser(@PathVariable String id, HttpSession session, SessionStatus sessionStatus, RedirectAttributes attrs) {
         Optional<UserDTO> user = userService.getUserById(id);
-        session.setAttribute("loggedInUser", null);
-        sessionStatus.setComplete();
-        session.invalidate();
         if (user.isEmpty()) {
             return "user/notFound";
         }
+        session.setAttribute("loggedInUser", null);
+        sessionStatus.setComplete();
+        session.invalidate();
+
         userService.deleteUser(id);
+
+        attrs.addFlashAttribute("message", "User deleted");
         return "redirect:/";
     }
 

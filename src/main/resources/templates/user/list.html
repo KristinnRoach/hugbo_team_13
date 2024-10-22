@@ -1,7 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>User List</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
 </head>
 <body>
 <div class="flex-column" th:fragment="section">
@@ -23,13 +22,9 @@
             <td>
                 <a th:href="@{/user/{id}(id=${user.id})}">View</a>
 
-                <th:block th:if="${user.id == session.loggedInUser.id}">
-                    <a th:href="@{/user/{id}/profile(id=${user.id})}">Edit</a>
-
-                    <form th:action="@{/user/{id}(id=${user.id})}" method="post" style="display: inline;">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <button style="color: darkred" type="submit">Delete Account</button>
-                    </form>
+                <th:block th:if="${session.loggedInUser} != null">
+                    <a th:if="${user.id == session.loggedInUser.id}"
+                       th:href="@{/user/edit}">Edit</a>
                 </th:block>
             </td>
         </tr>
