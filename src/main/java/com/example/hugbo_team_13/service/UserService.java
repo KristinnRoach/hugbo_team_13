@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Long.getLong;
+
 /**
  * Service class for managing users in the system.
  * Provides methods to create, retrieve, update, and delete users using a UserRepository.
@@ -69,8 +71,8 @@ public class UserService {
      * @param id the ID of the user.
      * @return an Optional containing the UserDTO if found, or empty if not.
      */
-    public Optional<UserDTO> getUserById(Long id) {
-        return userRepository.findById(id).map(this::convertToDTO);
+    public Optional<UserDTO> getUserById(String id) {
+        return userRepository.findById(Long.parseLong(id)).map(this::convertToDTO);
     }
 
     /**
@@ -107,8 +109,8 @@ public class UserService {
      * @return the updated UserDTO.
      * @throws IllegalArgumentException if the user is not found.
      */
-    public UserDTO updateUser(Long id, UserDTO newUserData) {
-        Optional<UserEntity> userOptional = userRepository.findById(id);
+    public UserDTO updateUser(String id, UserDTO newUserData) {
+        Optional<UserEntity> userOptional = userRepository.findById(Long.parseLong(id));
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("User not found");
         }
@@ -138,8 +140,8 @@ public class UserService {
      * 
      * @param id the ID of the user to delete.
      */
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(String id) {
+        userRepository.deleteById(Long.parseLong(id));
     }
 
     /**
@@ -156,8 +158,8 @@ public class UserService {
      * @param profilePicture the new profile picture as a byte array.
      * @throws RuntimeException if the user is not found.
      */
-    public void updateProfilePicture(Long id, byte[] profilePicture) {
-        UserEntity user = userRepository.findById(id)
+    public void updateProfilePicture(String id, byte[] profilePicture) {
+        UserEntity user = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setProfilePicture(profilePicture);
@@ -184,7 +186,8 @@ public class UserService {
      * @return the corresponding UserDTO.
      */
     private UserDTO convertToDTO(UserEntity user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getProfilePicture());
+        String strId = user.getId().toString();
+        return new UserDTO(strId, user.getUsername(), user.getEmail(), user.getProfilePicture());
     }
 
     /**
@@ -195,7 +198,8 @@ public class UserService {
      */
     private UserEntity convertToEntity(UserDTO userDTO) {
         UserEntity user = new UserEntity(userDTO.getUsername(), userDTO.getEmail());
-        user.setId(userDTO.getId());
+        Long longStr = getLong(userDTO.getId());
+        user.setId(longStr);
         return user;
     }
 }

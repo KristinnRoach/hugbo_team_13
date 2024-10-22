@@ -4,7 +4,6 @@ import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserLoginDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -70,16 +69,6 @@ public class UserController {
     }
 
 
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpSession session, SessionStatus sessionStatus) {
-        session.setAttribute("loggedInUser", null);
-        sessionStatus.setComplete();
-        session.invalidate();
-        return "redirect:/";
-    }
-
-
-
     @PostMapping("/signup")
     public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, BindingResult bindingResult,  HttpSession session, Model model) {
         if (bindingResult.hasErrors()) {
@@ -111,18 +100,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable Long id, Model model) {
+    public String getUserById(@PathVariable String id, Model model) {
         Optional<UserDTO> user = userService.getUserById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "profile";
+            return "user/profile";
         } else {
             return "user/notFound";
         }
     }
 
-    @PatchMapping("/{id}")
-    public String updateProfile(@PathVariable Long id, @ModelAttribute UserDTO userDTO, Model model) {
+    @PutMapping("/{id}")
+    public String updateProfile(@PathVariable String id, @ModelAttribute UserDTO userDTO, Model model) {
         try {
             Optional<UserDTO> existingUser = userService.getUserById(id);
             if (existingUser.isEmpty()) {
@@ -138,18 +127,29 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public String deleteUser(@PathVariable String id, HttpSession session, SessionStatus sessionStatus) {
         Optional<UserDTO> user = userService.getUserById(id);
+        session.setAttribute("loggedInUser", null);
+        sessionStatus.setComplete();
+        session.invalidate();
         if (user.isEmpty()) {
             return "user/notFound";
         }
         userService.deleteUser(id);
-        return "redirect:/user/logout";
+        return "redirect:/";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session, SessionStatus sessionStatus) {
+        session.setAttribute("loggedInUser", null);
+        sessionStatus.setComplete();
+        session.invalidate();
+        return "redirect:/";
     }
 
 
     @PostMapping("/{id}/profile-picture")
-    public String uploadProfilePicture(@PathVariable Long id,
+    public String uploadProfilePicture(@PathVariable String id,
                                        @RequestParam("file") MultipartFile file,
                                        Model model) throws IOException {
         byte[] imageBytes = file.getBytes();
@@ -160,7 +160,7 @@ public class UserController {
 
     /*
     @GetMapping("/{id}/profile-picture")
-    public String getProfilePicture(@PathVariable Long id, Model model) {
+    public String getProfilePicture(@PathVariable String id, Model model) {
         byte[] image = userService.getProfilePicture(id);
         model.addAttribute("profilePicture", image);
         return "user/profilePicture";
