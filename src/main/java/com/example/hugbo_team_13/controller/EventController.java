@@ -1,7 +1,6 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.EventDTO;
-import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.service.EventService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +11,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/event")
-@SessionAttributes("loggedInUser")
+// @SessionAttributes("loggedInUser")
 public class EventController {
 
     private final EventService eventService;
@@ -42,7 +41,7 @@ public class EventController {
         return "redirect:/event/list";
     }
 
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteEvent(@PathVariable("id") long id) {
         Optional<EventDTO> event = eventService.getEventById(id);
         if (event.isEmpty()) {

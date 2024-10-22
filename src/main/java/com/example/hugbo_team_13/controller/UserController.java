@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/user")
-@SessionAttributes("loggedInUser")
+// @SessionAttributes("loggedInUser")
 public class UserController {
 
     private final UserService userService;
@@ -115,14 +115,14 @@ public class UserController {
         Optional<UserDTO> user = userService.getUserById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "user/details";
+            return "profile";
         } else {
             return "user/notFound";
         }
     }
 
-    @PostMapping("/{id}/update")
-    public String updateUserInfo(@PathVariable Long id, @ModelAttribute UserDTO userDTO, Model model) {
+    @PatchMapping("/{id}")
+    public String updateProfile(@PathVariable Long id, @ModelAttribute UserDTO userDTO, Model model) {
         try {
             Optional<UserDTO> existingUser = userService.getUserById(id);
             if (existingUser.isEmpty()) {
@@ -130,28 +130,23 @@ public class UserController {
             }
             UserDTO updatedUser = userService.updateUser(id, userDTO);
             model.addAttribute("user", updatedUser);
-            return "user/updated";
+            return "user/profile";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
     }
 
-    @PostMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable Long id) {
         Optional<UserDTO> user = userService.getUserById(id);
         if (user.isEmpty()) {
             return "user/notFound";
         }
         userService.deleteUser(id);
-        return "redirect:/";
+        return "redirect:/user/logout";
     }
 
-    @PostMapping("/delete-all")
-    public String deleteAllUsers() {
-        userService.deleteAllUsers();
-        return "redirect:/";
-    }
 
     @PostMapping("/{id}/profile-picture")
     public String uploadProfilePicture(@PathVariable Long id,
@@ -169,6 +164,12 @@ public class UserController {
         byte[] image = userService.getProfilePicture(id);
         model.addAttribute("profilePicture", image);
         return "user/profilePicture";
+    }
+
+        @PostMapping("/delete-all")
+    public String deleteAllUsers() {
+        userService.deleteAllUsers();
+        return "redirect:/";
     }
     */
 

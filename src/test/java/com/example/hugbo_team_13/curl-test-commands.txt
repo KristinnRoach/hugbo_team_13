@@ -22,7 +22,7 @@ curl -X POST \
 
 # GET - ALL USERS
 
-curl http://localhost:8080/api/users
+curl http://localhost:8080/api/user/list
 
 
 # GET - USER BY ID
