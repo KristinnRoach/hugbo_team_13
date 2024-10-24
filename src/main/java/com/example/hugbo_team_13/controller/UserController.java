@@ -1,22 +1,25 @@
 package com.example.hugbo_team_13.controller;
 
+import com.example.hugbo_team_13.dto.FileUploadDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserLoginDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
 
 /**
  * Controller for managing users in the application.
@@ -24,7 +27,6 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping("/user")
-@SessionAttributes("loggedInUser")
 public class UserController {
 
     private final UserService userService;
@@ -77,13 +79,14 @@ public class UserController {
         }
         try {
             UserDTO user = userService.createUser(signupDTO);
-            session.setAttribute("loggedInUser", user);
-            // model.addAttribute("loggedInUser", user); // unnecessary?
-            return "redirect:/user/created";
+            if (user != null) {
+                session.setAttribute("loggedInUser", user);
+            }
         } catch (Exception e) {
             model.addAttribute("error", "An error occurred: " + e.getMessage());
             return "user/signup";
         }
+        return "redirect:/user/created";
     }
 
     @GetMapping("/created")
@@ -94,14 +97,17 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public String getAllUsers(Model model) {
+    public String getAllUsers(HttpSession session, Model model) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
         List<UserDTO> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "user/list";
     }
 
     @GetMapping("/{id}")
-    public String getUserById(@PathVariable String id, Model model) {
+    public String getUserPage(@PathVariable String id, Model model) {
         Optional<UserDTO> user = userService.getUserById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
@@ -111,26 +117,27 @@ public class UserController {
         }
     }
 
-    @GetMapping("/edit")
-    public String getUpdateForm(Model model, HttpSession session) {
-        UserDTO loggedInUser = (UserDTO) session.getAttribute("loggedInUser");
-        Optional<UserDTO> user = userService.getUserById(loggedInUser.getId());
-
+    @GetMapping("/{id}/edit")
+    public String getEditProfileForm(@PathVariable String id, Model model) {
+        Optional<UserDTO> user = userService.getUserById(id);
         if (user.isPresent()) {
             model.addAttribute("user", user.get());
-            return "editProfile";
+            return "user/edit-profile";
         } else {
-            return "user/notFound"; // todo: userNotLoggedIn
+            return "user/notFound";
         }
     }
 
+
+
     @PutMapping("/{id}")
-    public String updateProfile(@PathVariable String id, @ModelAttribute UserDTO user, HttpSession session, Model model) {
+    public String updateProfile(
+            @PathVariable String id,
+            @ModelAttribute UserDTO user,
+            // @ModelAttribute FileUploadDTO fileUpload.
+            HttpSession session,
+            Model model) {
         try {
-            Optional<UserDTO> existingUser = userService.getUserById(id);
-            if (existingUser.isEmpty()) {
-                return "user/notFound";
-            }
             UserDTO updatedUser = userService.updateUser(id, user);
             session.setAttribute("loggedInUser", updatedUser);
             return "redirect:/user/" + updatedUser.getId();
@@ -138,6 +145,31 @@ public class UserController {
             model.addAttribute("error", e.getMessage());
             return "error";
         }
+    }
+
+    @GetMapping("/{id}/profile-picture")
+    @ResponseBody
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String id) {
+        UserDTO user = userService.getUserById(id).orElseThrow();
+
+        if (user.getProfilePicture() != null) {
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)  // or detect actual image type
+                    .body(user.getProfilePicture());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/profile-picture")
+    public String updateProfilePicture(
+            @PathVariable String id,
+            @ModelAttribute FileUploadDTO fileUpload,
+            Model model
+    ) throws IOException {
+
+        userService.updateProfilePicture(id, fileUpload.getFile().getBytes());
+        model.addAttribute("message", "Profile picture updated successfully");
+        return "redirect:/user/" + id;
     }
 
     @DeleteMapping("/{id}")
@@ -165,16 +197,6 @@ public class UserController {
     }
 
 
-    @PostMapping("/{id}/profile-picture")
-    public String uploadProfilePicture(@PathVariable String id,
-                                       @RequestParam("file") MultipartFile file,
-                                       Model model) throws IOException {
-        byte[] imageBytes = file.getBytes();
-        userService.updateProfilePicture(id, imageBytes);
-        model.addAttribute("message", "Profile picture updated successfully");
-        return "user/profilePictureUpdated";
-    }
-
     /*
     @GetMapping("/{id}/profile-picture")
     public String getProfilePicture(@PathVariable String id, Model model) {
@@ -187,6 +209,17 @@ public class UserController {
     public String deleteAllUsers() {
         userService.deleteAllUsers();
         return "redirect:/";
+    }
+
+
+        @PostMapping("/{id}/profile-picture")
+    public String uploadProfilePicture(@PathVariable String id,
+                                       @RequestParam("file") MultipartFile file,
+                                       Model model) throws IOException {
+        byte[] imageBytes = file.getBytes();
+        userService.updateProfilePicture(id, imageBytes);
+        model.addAttribute("message", "Profile picture updated successfully");
+        return "user/profilePictureUpdated";
     }
     */
 

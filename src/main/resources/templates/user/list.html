@@ -3,7 +3,7 @@
     <title>User List</title>
 </head>
 <body>
-<div class="flex-column" th:fragment="section">
+<div th:fragment="section">
     <h1 class="page-title">User List</h1>
     <table>
         <thead>
@@ -11,7 +11,6 @@
             <th>ID</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -19,18 +18,18 @@
             <td th:text="${user.id}">ID</td>
             <td th:text="${user.username}">Username</td>
             <td th:text="${user.email}">Email</td>
-            <td>
+
+            <td th:if="${session.loggedInUser}">
                 <a th:href="@{/user/{id}(id=${user.id})}">View</a>
-
-                <th:block th:if="${session.loggedInUser} != null">
-                    <a th:if="${user.id == session.loggedInUser.id}"
-                       th:href="@{/user/edit}">Edit</a>
-                </th:block>
             </td>
-        </tr>
-        </tbody>
-    </table>
+            <td th:if="${session.loggedInUser.id == user.id}">
+                <a th:href="@{/user/{id}/edit(id=${user.id})}">Edit</a>
+            </td>
 
-</div>
-</body>
-</html>
+          </tr>
+          </tbody>
+      </table>
+
+  </div>
+  </body>
+  </html>

@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Entity class representing a user in the application.
@@ -24,27 +26,28 @@ public class UserEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     /**
      * The username of the user.
      * Cannot be null.
      */
-    @Column(nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
     /**
      * The email of the user.
      * Cannot be null.
      */
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
 
     /**
      * The hashed password of the user.
      * Cannot be null.
      */
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
     /**
@@ -66,6 +69,16 @@ public class UserEntity {
     @Lob
     private byte[] profilePicture;
 
+    // Events this user is attending
+    @ManyToMany
+    @JoinTable(
+            name = "user_event_attendees",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    private Set<EventEntity> attendingEvents = new HashSet<>();
+
+
     /**
      * Parameterized constructor for creating a new user.
      *
@@ -75,6 +88,16 @@ public class UserEntity {
     public UserEntity(String username, String email) {
         this.username = username;
         this.email = email;
+    }
+
+    public void attendEvent(EventEntity event) {
+        attendingEvents.add(event);
+        event.getAttendees().add(this);
+    }
+
+    public void cancelEventAttendance(EventEntity event) {
+        attendingEvents.remove(event);
+        event.getAttendees().remove(this);
     }
 
 }

@@ -6,30 +6,16 @@
 <body>
 <div class="flex-column profile" th:fragment="section">
 
-<h1 class="page-title">User Profile</h1>
+    <h1 class="page-title">User Profile</h1>
 
     <!-- Read-only ID (to be removed in production)-->
     <p><strong>ID:</strong> <span th:text="${user.id}">ID</span></p>
 
-    <!-- Read-only view of profile -->
-
-    <th:block >
-        <p><strong>Username:</strong> <span th:text="${user.username}">Username</span></p>
-        <p><strong>Email:</strong> <span th:text="${user.email}">Email</span></p>
-
-        <img th:if="${user.profilePicture}"
-             th:src="@{/user/{id}/profile-picture(id=${user.id})}"
-             alt="Current Profile Picture"
-             style="max-width: 200px; margin-top: 10px;"/>
-
-        <p th:unless="${user.profilePicture}">No profile picture available</p>
-
-    </th:block>
-
     <!-- Editable form if the user of this profile is logged in -->
-    <!--
+
     <th:block th:if="${session.loggedInUser.id == user.id}">
-        <form class="flex-column"
+        <!-- User data form -->
+        <form class="profile-form"
               th:action="@{/user/{id}(id=${user.id})}"
               method="post"
               th:object="${user}">
@@ -48,8 +34,8 @@
             <button type="submit" class="btn">Save Changes</button>
         </form>
 
-
-        <form class="flex-column"
+        <!-- Separate form for profile picture -->
+        <form class="profile-form"
               th:action="@{/user/{id}/profile-picture(id=${user.id})}"
               method="post"
               enctype="multipart/form-data">
@@ -58,11 +44,16 @@
             <div class="form-group">
                 <label for="profilePicture"><strong>Profile Picture:</strong></label>
                 <input type="file" id="profilePicture" name="file" accept="image/*"/>
-
+                <!-- Show current profile picture -->
+                <!--
               <img th:if="${user.profilePicture}"
-                   th:src="@{/user/{id}/profile-picture(id=${user.id})}"
-                   alt="Current Profile Picture"
-                   style="max-width: 200px; margin-top: 10px;"/>
+                   th:src="@{'data:image/jpeg;base64,' + ${@fileConverter.bytesToBase64(user.profilePicture)}}"
+                   alt="Profile Picture"/>
+              -->
+                <img th:if="${user.profilePicture}"
+                     th:src="@{/user/{id}/profile-picture(id=${user.id})}"
+                     alt="Current Profile Picture"
+                     style="max-width: 200px; margin-top: 10px;"/>
             </div>
 
             <button type="submit" class="btn">Update Profile Picture</button>
@@ -74,9 +65,10 @@
         </form>
 
     </th:block>
--->
-        <a href="/">Back to homepage</a>
 
-    </div>
+    <a href="/">Back to homepage</a>
+
+</div>
+
 </body>
 </html>
