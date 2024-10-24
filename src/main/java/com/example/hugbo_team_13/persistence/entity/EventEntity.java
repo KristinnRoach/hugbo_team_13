@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -50,4 +52,8 @@ public class EventEntity {
      */
     @Column(nullable = false)
     private LocalDateTime endDateTime;
+
+    @ManyToMany(mappedBy = "attendingEvents")
+    private Set<UserEntity> attendees = new HashSet<>();
+
 }

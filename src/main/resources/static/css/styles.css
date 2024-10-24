@@ -15,7 +15,13 @@ main {
 /* OTHER HTML ELEMENTS */
 
 a {
+  display: inline-block;
+
   text-decoration: none;
+}
+
+table, form {
+  border-radius: 15px;
 }
 
 table {
@@ -24,24 +30,28 @@ table {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-
-  width: fit-content;
   border-collapse: collapse;
 
   margin: 0 auto;
   padding: 1rem;
 }
 
-th, td {
+table th, td {
   padding: 12px;
   text-align: left;
   border: 1px solid #ddd;
 }
 
-th {
-  background-color: #dfdfdf;
+table th {
+  background-color: #ddd;
 }
+
+ul li {
+  list-style: none;
+  padding: 0.5rem;
+}
+
+
 
 
 /* GENERAL CLASSES */
@@ -53,6 +63,21 @@ th {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.profile-form {
+  background-color: #acbff1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 25rem;
+  margin: 0 auto;
+}
+
+.profile {
+  gap: 1rem;
 }
 
 .flex-column {
@@ -71,7 +96,6 @@ th {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  color: #91c2f8;
 }
 
 .page-title {

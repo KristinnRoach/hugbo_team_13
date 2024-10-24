@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Event Attendees</title>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+    <h2>Attendees for <span th:text="${event.name}"></span></h2>
+
+    <div class="list">
+
+        <div th:if="${attendees.isEmpty()}" class="no-attendees">
+            No one is attending this event yet.
+        </div>
+
+        <ul th:each="attendee : ${attendees}" class="attendee-item">
+            <li>
+                <a th:if="${session.loggedInUser}" th:href="@{/user/{id}(id=${attendee.id})}" th:text="${attendee.username + '''s profile'}">View attendee's profile</a>
+            </li>
+        </ul>
+
+    </div>
+
+    <a th:href="@{/event/{id}(id=${event.id})}" class="btn">Back to Event</a>
+</div>
+</body>
+</html>

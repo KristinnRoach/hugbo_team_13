@@ -1,16 +1,17 @@
 package com.example.hugbo_team_13.service;
 
+import com.example.hugbo_team_13.converter.FileConverter;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
+import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.UserEntity;
+import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import com.example.hugbo_team_13.persistence.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static java.lang.Long.getLong;
 
 /**
  * Service class for managing users in the system.
@@ -21,24 +22,26 @@ import static java.lang.Long.getLong;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     /**
      * Constructor to inject the UserRepository dependency.
-     * 
+     *
      * @param userRepository the repository to handle user data.
      */
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository) {
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
     /**
      * Creates a new user based on the provided UserSignupDTO.
      * Validates the username to ensure it is not empty and does not already exist.
-     * 
+     *
      * @param signupDTO the data transfer object (DTO) representing the user's sign-up details.
      * @return the created UserDTO object.
      * @throws IllegalArgumentException if the username is empty.
-     * @throws RuntimeException if a user with the same username already exists.
+     * @throws RuntimeException         if a user with the same username already exists.
      */
     public UserDTO createUser(UserSignupDTO signupDTO) {
         String username = signupDTO.getUsername();
@@ -67,7 +70,7 @@ public class UserService {
 
     /**
      * Retrieves a user by their ID.
-     * 
+     *
      * @param id the ID of the user.
      * @return an Optional containing the UserDTO if found, or empty if not.
      */
@@ -77,7 +80,7 @@ public class UserService {
 
     /**
      * Retrieves a user by their username.
-     * 
+     *
      * @param username the username of the user.
      * @return the UserDTO if found, or null if the user does not exist.
      */
@@ -88,7 +91,7 @@ public class UserService {
 
     /**
      * Retrieves all users from the repository.
-     * 
+     *
      * @return a list of UserDTOs representing all users in the system.
      */
     public List<UserDTO> getAllUsers() {
@@ -103,20 +106,28 @@ public class UserService {
 
     /**
      * Updates an existing user with new data.
-     * 
-     * @param id the ID of the user to update.
-     * @param newUserData the updated user data.
+     *
+     * @param id     the ID of the user to update.
+     * @param newDTO the updated user data.
      * @return the updated UserDTO.
      * @throws IllegalArgumentException if the user is not found.
      */
-    public UserDTO updateUser(String id, UserDTO newUserData) {
-        Optional<UserEntity> userOptional = userRepository.findById(Long.parseLong(id));
-        if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
+    public UserDTO updateUser(String id, UserDTO newDTO) {
+
+        UserEntity user = userRepository.findById(Long.parseLong(id))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+
+        if (newDTO.getUsername() != null) {
+            user.setUsername(newDTO.getUsername());
         }
-        UserEntity user = userOptional.get();
-        user.setUsername(newUserData.getUsername());
-        user.setEmail(newUserData.getEmail());
+        if (newDTO.getEmail() != null) {
+            user.setEmail(newDTO.getEmail());
+        }
+
+        if (newDTO.getProfilePicture() != null && newDTO.getProfilePicture().length > 0) {
+            user.setProfilePicture(newDTO.getProfilePicture());
+        }
 
         UserEntity savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
@@ -125,7 +136,7 @@ public class UserService {
     /**
      * Saves a user entity.
      * If the user ID is not set, it creates a new user; otherwise, it updates an existing user.
-     * 
+     *
      * @param userDTO the data transfer object representing the user.
      * @return the saved UserDTO.
      */
@@ -137,7 +148,7 @@ public class UserService {
 
     /**
      * Deletes a user by their ID.
-     * 
+     *
      * @param id the ID of the user to delete.
      */
     public void deleteUser(String id) {
@@ -153,11 +164,12 @@ public class UserService {
 
     /**
      * Updates the profile picture of a user.
-     * 
-     * @param id the ID of the user whose profile picture is to be updated.
+     *
+     * @param id             the ID of the user whose profile picture is to be updated.
      * @param profilePicture the new profile picture as a byte array.
      * @throws RuntimeException if the user is not found.
      */
+
     public void updateProfilePicture(String id, byte[] profilePicture) {
         UserEntity user = userRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -166,41 +178,76 @@ public class UserService {
         userRepository.save(user);
     }
 
-    /**
-     * Retrieves the profile picture of a user.
-     * 
-     * @param id the ID of the user whose profile picture is to be retrieved.
-     * @return the profile picture as a byte array.
-     * @throws RuntimeException if the user is not found.
-     */
-    public byte[] getProfilePicture(Long id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getProfilePicture();
+    public void attendEvent(String userID, String eventID) {
+        if (userID.isEmpty() || eventID.isEmpty()) { return; }
+
+        UserEntity user = userRepository.findById(Long.parseLong(userID)).orElseThrow();
+        EventEntity event = eventRepository.findById(Long.parseLong(eventID)).orElseThrow();
+
+        user.attendEvent(event);
+        userRepository.save(user);
+    }
+
+    public void cancelAttendance(String userID, String eventID) {
+        if (userID.isEmpty() || eventID.isEmpty()) { return; }
+
+        UserEntity user = userRepository.findById(Long.parseLong(userID)).orElseThrow();
+        EventEntity event = eventRepository.findById(Long.parseLong(eventID)).orElseThrow();
+
+        user.cancelEventAttendance(event);
+        userRepository.save(user);
     }
 
     /**
      * Converts a UserEntity to a UserDTO.
-     * 
+     *
      * @param user the UserEntity to convert.
      * @return the corresponding UserDTO.
      */
-    private UserDTO convertToDTO(UserEntity user) {
+    public UserDTO convertToDTO(UserEntity user) {
         String strId = user.getId().toString();
-        return new UserDTO(strId, user.getUsername(), user.getEmail(), user.getProfilePicture());
+        UserDTO dto = new UserDTO();
+        dto.setId(strId);
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
+
+        if (user.getProfilePicture() != null && user.getProfilePicture().length > 0) {
+            user.setProfilePicture(user.getProfilePicture());
+        }
+
+        return dto;
     }
+
 
     /**
      * Converts a UserDTO to a UserEntity.
-     * 
+     *
      * @param userDTO the UserDTO to convert.
      * @return the corresponding UserEntity.
      */
     private UserEntity convertToEntity(UserDTO userDTO) {
         UserEntity user = new UserEntity(userDTO.getUsername(), userDTO.getEmail());
-        Long longStr = getLong(userDTO.getId());
+        Long longStr = Long.parseLong(userDTO.getId());
         user.setId(longStr);
+
+        // Handle profile picture if present in DTO
+        if (user.getProfilePicture() != null && user.getProfilePicture().length > 0) {
+            user.setProfilePicture(user.getProfilePicture());
+        }
+
         return user;
     }
+
+    /*
+    private void attendEvent(String eventID) {
+        attendingEvents.add(event);
+        event.getAttendees().add(this);
+    }
+
+    private void cancelEventAttendance(EventEntity event) {
+        attendingEvents.remove(event);
+        event.getAttendees().remove(this);
+    }
+*/
 }
 

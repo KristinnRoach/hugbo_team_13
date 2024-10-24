@@ -5,12 +5,13 @@
 </head>
 <body>
 <div class="flex-column" th:fragment="section">
-
-    <th:block th:if="${session.loggedInUser != null}">
-        <a th:href="@{/event/create}" style="font-size: larger">Create Event</a>
-    </th:block>
-
+    <div class="flex-row">
     <h1 class="page-title">Events List</h1>
+    <th:block th:if="${session.loggedInUser != null}">
+        <a th:href="@{/event/create}" style="font-size: larger">Create Event!</a>
+    </th:block>
+    </div>
+
     <table>
         <thead>
         <tr>
@@ -33,17 +34,20 @@
             <td th:text="${event.startTime}">Start Time</td>
             <td th:text="${event.endTime}">End Time</td>
 
-            <td>
-                <a th:href="@{/event/{id}(id=${event.id})}">View</a>
-                <!-- todo: only admin can edit or delete -->
-                <th:block th:if="${session.loggedInUser != null}">
-                <a th:href="@{/event/{id}/update(id=${event.id})}">Edit</a>
-                <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
-                    <input type="hidden" name="_method" value="DELETE"/>
-                    <button style="color: darkred" type="submit">Delete Event</button>
-                </form>
-                </th:block>
-            </td>
+            <th:block th:if="${session.loggedInUser}">
+
+                <td>
+                    <a th:href="@{/event/{id}(id=${event.id})}">View</a>
+                    <!-- todo: only admin can edit or delete -->
+                    <a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a>
+                    <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
+                        <input type="hidden" name="_method" value="DELETE"/>
+                        <button style="color: darkred" type="submit">Delete Event</button>
+                    </form>
+                </td>
+
+            </th:block>
+
         </tr>
         </tbody>
     </table>
