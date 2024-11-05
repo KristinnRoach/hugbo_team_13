@@ -6,6 +6,7 @@ import com.example.hugbo_team_13.dto.GameCreateDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.dto.RankDTO;
 import com.example.hugbo_team_13.service.GameService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,10 @@ public class GameController {
     }
 
     @GetMapping("/create")
-    public String getCreateGame(Model model) {
+    public String getCreateGame(HttpSession session, Model model) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("game", new GameDTO());
         return "game/create";
     }

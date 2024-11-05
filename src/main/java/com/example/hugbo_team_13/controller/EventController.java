@@ -34,7 +34,10 @@ public class EventController {
 
 
     @GetMapping("/create")
-    public String getEventForm(Model model) {
+    public String getEventForm(HttpSession session, Model model) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
         model.addAttribute("event", new EventDTO());
         return "event/create";
     }
