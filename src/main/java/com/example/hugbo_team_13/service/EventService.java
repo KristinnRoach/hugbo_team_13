@@ -5,6 +5,7 @@ import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -116,9 +117,41 @@ public class EventService {
      * 
      * @param id the ID of the event to delete.
      */
+    @Transactional
     public void deleteEvent(String id) {
-        eventRepository.deleteById(Long.valueOf(id));
+        EventEntity event = eventRepository.findById(Long.valueOf(id))
+                .orElseThrow(); // todo: -> new EntityNotFoundException("Event not found"));
+
+        // Remove the event from all users' attendingEvents sets
+        event.getAttendees().forEach(user -> {
+            user.getAttendingEvents().remove(event);
+        });
+
+        // Clear the attendees set
+        event.getAttendees().clear();
+
+        // Now you can safely delete the event
+        eventRepository.delete(event);
     }
+/*
+    @Transactional
+    public void deleteEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        // Remove the event from all users' attendingEvents sets
+        event.getAttendees().forEach(user -> {
+            user.getAttendingEvents().remove(event);
+        });
+
+        // Clear the attendees set
+        event.getAttendees().clear();
+
+        // Now you can safely delete the event
+        eventRepository.delete(event);
+    }
+
+ */
     /**
      * Deletes all events from the database.
      */
