@@ -53,7 +53,8 @@ public class EventEntity {
     @Column(nullable = false)
     private LocalDateTime endDateTime;
 
-    @ManyToMany(mappedBy = "attendingEvents")
+
+    @ManyToMany(mappedBy = "attendingEvents", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<UserEntity> attendees = new HashSet<>();
 
 }
