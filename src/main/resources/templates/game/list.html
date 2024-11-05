@@ -5,13 +5,14 @@
 </head>
 <body>
 <div class="flex-column" th:fragment="section">
-    <h1 class="page-title">Events List</h1>
+    <h1 class="page-title">Games</h1>
     <table>
         <thead>
         <tr>
             <th>ID</th>
             <th>Game Name</th>
             <th>Platform</th>
+            <th>Skill levels</th>
             <!--
             <th>About</th>
             <th>Actions</th>
@@ -23,6 +24,7 @@
             <td th:text="${game.id}">ID</td>
             <td th:text="${game.name}">Game Name</td>
             <td th:text="${game.platform}">Platform</td>
+            <td><p th:each="skill : ${game.ranks}" th:text="${skill.value}"></p></td>
 
             <!--
             <td>

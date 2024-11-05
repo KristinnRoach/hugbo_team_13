@@ -20,17 +20,17 @@
             <span th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}"></span>
         </div>
         <div>
-            <label for="skill">Skill levels:</label>
-            <div id="levels" th:object="${rank}">
-                <input type="text" id="skill" th:field="*{skill}" required>
+            <label for="levels">Skill levels:</label>
+            <div id="levels">
+                <input th:field="*{ranks[1]}" type="text" required>
+                <input th:field="*{ranks[2]}" type="text" required>
+                <input th:field="*{ranks[3]}" type="text" required>
             </div>
-            <span th:if="${#fields.hasErrors('skill')}" th:errors="*{skill}"></span>
-            <button onclick="addForm()">+</button><button onclick="removeForm()">-</button>
-        </div>
+            </div>
         <div>
             <button type="submit">Add Game</button>
         </div>
-    </form>
+    </form>S
 </div>
 </body>
 </html>

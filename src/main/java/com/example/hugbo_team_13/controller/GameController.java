@@ -24,8 +24,13 @@ public class GameController {
     @GetMapping("/create")
     public String getCreateGame(Model model) {
         model.addAttribute("game", new GameDTO());
-        model.addAttribute("rank", new RankDTO());
         return "game/create";
+    }
+
+    @PostMapping("/create")
+    public String createGame(@ModelAttribute("game") GameDTO gameDTO) {
+        gameService.createGame(gameDTO);
+        return "redirect:/game/list";
     }
 
     @GetMapping("/list")

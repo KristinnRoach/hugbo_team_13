@@ -58,10 +58,15 @@ public class GameService {
         return convertGameToDto(savedGame);
     }
 
+    private GameDTO convertGameToDto(GameEntity game) {
+        return new GameDTO(game.getId(), game.getName(), game.getPlatform(), game.getRanks());
+    }
+
     /**
      * Retrieves a game by its ID.
+     *
      * 
-     * @param id the ID of the game.
+     * @param id the ID of the game
      * @return an Optional containing the GameDTO if found, or empty if not.
      */
     public Optional<GameDTO> getGameById(Long id) {
@@ -155,18 +160,17 @@ public class GameService {
 
         return convertRankToDto(rankEntity);
     }
-
     /**
      * Converts a GameEntity to a GameDTO.
      * 
      * @param game the GameEntity to convert.
      * @return the corresponding GameDTO.
-     */
+
     private GameDTO convertGameToDto(GameEntity game) {
         RankEntity rankEntity = game.getRankEntity();
         RankDTO rankDTO = rankEntity != null ? convertRankToDto(rankEntity) : null;
         return new GameDTO(game.getId(), game.getName(), game.getPlatform(), rankDTO);
-    }
+    }*/
 
     /**
      * Creates a GameEntity from a GameDTO.
@@ -178,12 +182,7 @@ public class GameService {
         GameEntity game = new GameEntity();
         game.setName(dto.getName());
         game.setPlatform(dto.getPlatform());
-
-        if (dto.getRank() != null) {
-            RankEntity rankEntity = new RankEntity();
-            rankEntity.setRanks(dto.getRank().getRanks());
-            game.setRankEntity(rankEntity);
-        }
+        game.setRanks(dto.getRanks());
         return game;
     }
 
