@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,14 +16,15 @@ public class GameDTO {
     private Long id;
     private String name;
     private String platform;
-    private RankDTO rank;
+    private Map<Integer, String> ranks = new HashMap<>();
+
 
     // Parameterized constructor
-    public GameDTO(Long id, String name, String platform, RankDTO rank) {
+    public GameDTO(Long id, String name, String platform, Map<Integer, String> ranks) {
         this.id = id;
         this.name = name;
         this.platform = platform;
-        this.rank = rank;
+        this.ranks = ranks;
     }
 }
 

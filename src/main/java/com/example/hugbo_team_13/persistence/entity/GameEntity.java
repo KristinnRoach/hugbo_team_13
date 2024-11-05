@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Entity class representing a game in the application.
  * Mapped to the "game" table in the database.
@@ -46,17 +49,18 @@ public class GameEntity {
     @OneToOne(mappedBy = "game", cascade = CascadeType.ALL)
     private RankEntity rankEntity;
 
-    /**
-     * Sets the associated rank entity for this game.
-     * This method establishes the bidirectional relationship between the game and its rank entity.
-     *
-     * @param rankEntity the rank entity to associate with this game.
-     */
-    public void setRankEntity(RankEntity rankEntity) {
-        this.rankEntity = rankEntity;
-        if (rankEntity != null) {
-            rankEntity.setGame(this);
-        }
+    @ElementCollection
+    @CollectionTable(name = "game_ranks", joinColumns = @JoinColumn(name = "game_id"))
+    @MapKeyColumn(name = "rank_level") // Column for the map's key
+    @Column(name = "rank_name") // Column for the map's value
+    private Map<Integer, String> ranks = new HashMap<>();
+
+    public Map<Integer, String> getRanks() {
+        return ranks;
+    }
+
+    public void setRanks(Map<Integer, String> ranks) {
+        this.ranks = ranks;
     }
 }
 

@@ -1,14 +1,14 @@
 package com.example.hugbo_team_13.controller;
 
 
+import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameCreateDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
+import com.example.hugbo_team_13.dto.RankDTO;
 import com.example.hugbo_team_13.service.GameService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/game")
@@ -23,7 +23,8 @@ public class GameController {
 
     @GetMapping("/create")
     public String getCreateGame(Model model) {
-        model.addAttribute("game", new GameCreateDTO());
+        model.addAttribute("game", new GameDTO());
+        model.addAttribute("rank", new RankDTO());
         return "game/create";
     }
 
