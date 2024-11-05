@@ -1,0 +1,20 @@
+<!--
+<div class="login" th:fragment="header-login()">
+    <form method="post" th:action="@{/user/login}" th:object="${loginDTO}">
+        <label for="login-username">Username</label>
+        <input class="login-input" type="text" id="login-username" th:field="*{username}" required />
+        <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+
+        <label for="login-password">Password</label>
+        <input class="login-input" type="password" id="login-password" th:field="*{password}" required  />
+        <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+
+        <button id="login-button" type="submit">Login</button>
+    </form>
+</div>
+
+<div th:if="${error}" class="error-message">
+    <p th:text="${error}"></p>
+</div>
+
+-->

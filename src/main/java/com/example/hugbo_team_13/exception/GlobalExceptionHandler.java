@@ -4,30 +4,50 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 
 /**
  * Global exception handler for the application.
- * This class handles exceptions thrown by the controllers and 
- * sends appropriate HTTP responses to the client.
+ * Provides centralized handling of exceptions across all controllers.
  */
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
-     * Handles RuntimeException and sends a standardized error response.
+     * Handles client-side validation errors and bad requests.
+     * Maps IllegalArgumentException to HTTP 400 Bad Request responses.
      *
-     * @param ex The RuntimeException that was thrown.
-     * @return A ResponseEntity containing the error response and HTTP status.
+     * @param ex The IllegalArgumentException that was thrown
+     * @return ResponseEntity containing error details and BAD_REQUEST status
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
+        logger.error("Bad request: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage()),
+                HttpStatus.BAD_REQUEST
+        );
+    }
+    /**
+     * Handles unexpected server-side errors.
+     * Maps uncaught RuntimeExceptions to HTTP 500 Internal Server Error responses.
+     *
+     * @param ex The RuntimeException that was thrown
+     * @return ResponseEntity containing error details and INTERNAL_SERVER_ERROR status
      */
     @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
-        logger.error("An error occurred: {}", ex.getMessage(), ex);
-
-        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        logger.error("Server error: {}", ex.getMessage(), ex);
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 }

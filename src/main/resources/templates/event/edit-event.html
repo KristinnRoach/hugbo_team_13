@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Event Page</title>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+    <h1 class="page-title">Update Event</h1>
+
+    <!-- Editable form if an admin of this event is logged in // th:if="${event.adminIDs contains session.loggedInUser.id }" -->
+
+    <th:block th:if="${session.loggedInUser}">
+
+        <form class="flex-column"
+              th:action="@{/event/{id}(id=${event.id})}"
+              method="post"
+              th:object="${event}">
+            <input type="hidden" name="_method" value="PUT"/>
+
+            <div class="form-group">
+                <label for="name"><strong>Username:</strong></label>
+                <input type="text" id="name" name="name" th:value="*{name}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="startDate"><strong>Start Date:</strong></label>
+                <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="endDate"><strong>End Date:</strong></label>
+                <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="startTime"><strong>Start Date:</strong></label>
+                <input type="time" id="startTime" name="startTime" th:value="*{startTime}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="endTime"><strong>Start Date:</strong></label>
+                <input type="time" id="endTime" name="endTime" th:value="*{endTime}" required/>
+            </div>
+
+            <button type="submit" class="btn">Save Changes</button>
+        </form>
+
+    </th:block>
+
+</div>
+</body>
+</html>

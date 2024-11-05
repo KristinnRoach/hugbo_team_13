@@ -1,27 +1,23 @@
 package com.example.hugbo_team_13.dto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /* 
     Data Transfer Object with user info that can be safely used and sent to the client. 
     No password (no id?)
 */
-@Getter
+@Getter // to be removed if not needed
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserDTO {
 
-    private Long id;
-    private String username;
-    private String email;
-    private byte[] profilePicture;
+    public String id;
+    public String username;
+    public String email;
+    public byte[] profilePicture;  // for displaying
 
-    // Parameterized constructor
-    public UserDTO(Long id, String username, String email, byte[] profilePicture) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.profilePicture = profilePicture;
-    }
 }

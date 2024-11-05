@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/game")
-@SessionAttributes("loggedInUser")
 public class GameController {
 
     private final GameService gameService;

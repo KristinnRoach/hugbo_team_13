@@ -4,6 +4,14 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### persistent data ###
+/data
+
+### Mac drasl ###
+**/*.DS_Store
+
+### kidda glósur ###
+*.kidnote
 *.old
 
 ### STS ###

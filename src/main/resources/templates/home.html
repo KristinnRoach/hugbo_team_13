@@ -11,7 +11,6 @@
     <p>Please <a href="user/login">log in</a> or <a href="user/signup">sign up</a> to continue</p>
    </th:block> <th:block th:if="${session.loggedInUser != null}">
       <h1 class="page-title" th:text="'Welcome back, ' + ${session.loggedInUser.username}"/>
-    <!-- <h1 class="page-title" th:if="${session.loggedInUser != null}">Welcome back, <span th:text="${session.loggedInUser.username}"></span></h1> -->   <!-- Upcoming events etc... dashboard -->
    </th:block>
   </section>
  </body>

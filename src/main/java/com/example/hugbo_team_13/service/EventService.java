@@ -5,6 +5,7 @@ import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing events.
@@ -21,13 +23,16 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
-        /**
+    private final UserService userService;
+
+    /**
      * Constructor to inject the EventRepository.
      * 
      * @param eventRepository the repository to handle event data.
      */
-    public EventService(EventRepository eventRepository) {
+    public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
+        this.userService = userService;
     }
 
       /**
@@ -63,8 +68,8 @@ public class EventService {
      * @param id the ID of the event.
      * @return an Optional containing the EventDTO if found, or empty if not.
      */
-    public Optional<EventDTO> getEventById(Long id) {
-        return eventRepository.findById(id).map(this::convertToDTO);
+    public Optional<EventDTO> getEventById(String id) {
+        return eventRepository.findById(Long.valueOf(id)).map(this::convertToDTO);
     }
       /**
      * Retrieves an event by its name.
@@ -100,17 +105,53 @@ public class EventService {
      */
     public EventDTO saveEvent(EventDTO dto) { // (save creates a new entity if ID is not set)
         EventEntity event = convertToEntity(dto);
+        System.out.println("dto id: " + dto.getId());
+        System.out.println("entity id: " + event.getId());
+
         EventEntity savedEvent = eventRepository.save(event);
         return convertToDTO(savedEvent);
     }
+
     /**
      * Deletes an event by its ID.
      * 
      * @param id the ID of the event to delete.
      */
-    public void deleteEvent(Long id) {
-        eventRepository.deleteById(id);
+    @Transactional
+    public void deleteEvent(String id) {
+        EventEntity event = eventRepository.findById(Long.valueOf(id))
+                .orElseThrow(); // todo: -> new EntityNotFoundException("Event not found"));
+
+        // Remove the event from all users' attendingEvents sets
+        event.getAttendees().forEach(user -> {
+            user.getAttendingEvents().remove(event);
+        });
+
+        // Clear the attendees set
+        event.getAttendees().clear();
+
+        // Now you can safely delete the event
+        eventRepository.delete(event);
     }
+/*
+    @Transactional
+    public void deleteEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        // Remove the event from all users' attendingEvents sets
+        event.getAttendees().forEach(user -> {
+            user.getAttendingEvents().remove(event);
+        });
+
+        // Clear the attendees set
+        event.getAttendees().clear();
+
+        // Now you can safely delete the event
+        eventRepository.delete(event);
+    }
+
+ */
     /**
      * Deletes all events from the database.
      */
@@ -125,12 +166,17 @@ public class EventService {
      */
     private EventDTO convertToDTO(EventEntity entity) {
         EventDTO dto = new EventDTO();
-        dto.setId(entity.getId());
+        dto.setId(entity.getId().toString());
         dto.setName(entity.getName());
         dto.setStartDate(entity.getStartDateTime().toLocalDate());
         dto.setEndDate(entity.getEndDateTime().toLocalDate());
         dto.setStartTime(entity.getStartDateTime().toLocalTime());
         dto.setEndTime(entity.getEndDateTime().toLocalTime());
+
+        dto.setAttendees(entity.getAttendees().stream()
+                .map(userService::convertToDTO)
+                .collect(Collectors.toSet()));
+
         return dto;
     }
      /**
@@ -141,7 +187,9 @@ public class EventService {
      */
     private EventEntity convertToEntity(EventDTO dto) {
         EventEntity entity = new EventEntity();
-        entity.setId(dto.getId());
+        if (dto.getId() != null) {
+            entity.setId(Long.parseLong(dto.getId()));
+        }
         entity.setName(dto.getName());
         entity.setStartDateTime(combineDateAndTime(dto.getStartDate(), dto.getStartTime()));
         entity.setEndDateTime(combineDateAndTime(dto.getEndDate(), dto.getEndTime()));

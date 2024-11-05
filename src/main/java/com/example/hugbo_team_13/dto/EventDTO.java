@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Data Transfer Object (DTO) representing an event in the application.
@@ -21,31 +23,34 @@ public class EventDTO {
     /**
      * Unique identifier for the event.
      */
-    private Long id;
+    public String id;
 
     /**
      * The name of the event.
      */
-    private String name;
+    public String name;
 
     /**
      * The start date of the event.
      */
-    private LocalDate startDate;
+    public LocalDate startDate;
 
     /**
      * The end date of the event.
      */
-    private LocalDate endDate;
+    public LocalDate endDate;
 
     /**
      * The start time of the event.
      */
-    private LocalTime startTime;
+    public LocalTime startTime;
 
     /**
      * The end time of the event.
      */
-    private LocalTime endTime;
+    public LocalTime endTime;
+
+    private Set<UserDTO> attendees = new HashSet<>();  // Add this
+
 
 }
