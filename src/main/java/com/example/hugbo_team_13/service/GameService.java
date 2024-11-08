@@ -1,7 +1,6 @@
 package com.example.hugbo_team_13.service;
 
 import com.example.hugbo_team_13.dto.GameDTO;
-import com.example.hugbo_team_13.dto.RankDTO;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
-    private final RankRepository rankRepository;
 
     /**
      * Constructor to inject the repositories.
@@ -32,7 +30,6 @@ public class GameService {
      */
     public GameService(GameRepository gameRepository, RankRepository rankRepository) {
         this.gameRepository = gameRepository;
-        this.rankRepository = rankRepository;
     }
 
     /**
@@ -135,44 +132,6 @@ public class GameService {
     }
 
     /**
-     * Creates a ranking system for a specific game.
-     * 
-     * @param gameId the ID of the game to add a ranking system to.
-     * @param rankDTO the data transfer object (DTO) representing the rank.
-     * @return the created RankDTO object.
-     * @throws ResponseStatusException if the game is not found by its ID.
-     * @throws IllegalStateException if the game already has a ranking system.
-     */
-    public RankDTO createRankForGame(Long gameId, RankDTO rankDTO) {
-        GameEntity game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found with id: " + gameId));
-
-        if (game.getRankEntity() != null) {
-            throw new IllegalStateException("Game already has a ranking system");
-        }
-
-        RankEntity rankEntity = createRankEntity(rankDTO);
-        rankEntity.setGame(game);
-        game.setRankEntity(rankEntity);
-
-        rankEntity = rankRepository.save(rankEntity);
-        gameRepository.save(game);  // might not be necessary due to cascading, but safer to do it explicitly
-
-        return convertRankToDto(rankEntity);
-    }
-    /**
-     * Converts a GameEntity to a GameDTO.
-     * 
-     * @param game the GameEntity to convert.
-     * @return the corresponding GameDTO.
-
-    private GameDTO convertGameToDto(GameEntity game) {
-        RankEntity rankEntity = game.getRankEntity();
-        RankDTO rankDTO = rankEntity != null ? convertRankToDto(rankEntity) : null;
-        return new GameDTO(game.getId(), game.getName(), game.getPlatform(), rankDTO);
-    }*/
-
-    /**
      * Creates a GameEntity from a GameDTO.
      * 
      * @param dto the GameDTO to convert.
@@ -184,28 +143,6 @@ public class GameService {
         game.setPlatform(dto.getPlatform());
         game.setRanks(dto.getRanks());
         return game;
-    }
-
-    /**
-     * Creates a RankEntity from a RankDTO.
-     * 
-     * @param dto the RankDTO to convert.
-     * @return the corresponding RankEntity.
-     */
-    private RankEntity createRankEntity(RankDTO dto) {
-        RankEntity rankEntity = new RankEntity();
-        rankEntity.setRanks(dto.getRanks());
-        return rankEntity;
-    }
-
-    /**
-     * Converts a RankEntity to a RankDTO.
-     * 
-     * @param entity the RankEntity to convert.
-     * @return the corresponding RankDTO.
-     */
-    private RankDTO convertRankToDto(RankEntity entity) {
-        return new RankDTO(entity.getId(), entity.getGame().getId(), entity.getRanks());
     }
 }
 
