@@ -6,6 +6,9 @@
 <body>
 <div class="flex-column" th:fragment="section">
     <h1 class="page-title">Games</h1>
+    <th:block th:if="${session.loggedInUser != null}">
+        <a th:href="@{/game/create}" style="font-size: larger">Add a game</a>
+    </th:block>
     <table>
         <thead>
         <tr>
