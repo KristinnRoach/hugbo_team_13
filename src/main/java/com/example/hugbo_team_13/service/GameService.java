@@ -124,12 +124,6 @@ public class GameService {
         gameRepository.deleteById(id);
     }
 
-    /**
-     * Deletes all games from the database.
-     */
-    public void deleteAllGames() {
-        gameRepository.deleteAll();
-    }
 
     /**
      * Creates a GameEntity from a GameDTO.

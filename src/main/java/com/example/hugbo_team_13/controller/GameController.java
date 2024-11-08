@@ -26,6 +26,14 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    // Delete single game
+    @DeleteMapping("/{id}")
+    public String deleteGame(@PathVariable Long id) {
+        gameService.deleteGame(id); // Implement delete logic in service
+        return "redirect:/game/list";
+    }
+
+
     /**
      * Handles GET requests to display the game creation form.
      * Redirects to the login page if no user is logged in.
