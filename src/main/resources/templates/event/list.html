@@ -7,9 +7,13 @@
 <div class="flex-column" th:fragment="section">
     <div class="flex-row">
     <h1 class="page-title">Events List</h1>
-    <th:block th:if="${session.loggedInUser != null}">
-        <a th:href="@{/event/create}" style="font-size: larger">Create Event!</a>
-    </th:block>
+        <th:block th:if="${session.loggedInUser != null}">
+            <form th:action="@{/game/deleteAll}" method="post" onsubmit="return confirm('Are you sure you want to delete all games? This action cannot be undone.')">
+                <button style="margin-left: 20px;" type="submit">Delete All Games</button>
+            </form>
+
+        </th:block>
+
     </div>
 
     <table>

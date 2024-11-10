@@ -3,6 +3,20 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('main.js loaded');
 });
 
+function addForm() {
+    var para = document.createElement('input');
+    var element = document.getElementById('levels');
+    element.appendChild(para);
+}
+//
+function removeForm() {
+    var element = document.getElementById('levels');
+    var count = element.childElementCount;
+    if (count > 1) {
+            element.removeChild(element.lastChild);
+    }
+}
+
 /*
 const routes = {
   '': 'home',

@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-
 /**
  * Controller for managing users in the application.
- * Provides endpoints for creating, retrieving, updating, and deleting user accounts.
+ * Provides endpoints for user signup, login, profile viewing, editing, and deletion.
  */
 @Controller
 @RequestMapping("/user")
@@ -31,22 +30,48 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Constructs a UserController with the specified UserService.
+     *
+     * @param userService the service handling user operations
+     */
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
+    /**
+     * Displays the signup form for new users.
+     *
+     * @param model the model to hold a new UserSignupDTO
+     * @return the view name for the signup page
+     */
     @GetMapping("/signup")
     public String showSignupForm(Model model) {
         model.addAttribute("signupDTO", new UserSignupDTO());
         return "user/signup";
     }
 
+    /**
+     * Displays the login form.
+     *
+     * @param model the model to hold a new UserLoginDTO
+     * @return the view name for the login page
+     */
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         model.addAttribute("loginDTO", new UserLoginDTO());
         return "user/login";
     }
 
+    /**
+     * Processes login requests.
+     *
+     * @param loginDTO      the UserLoginDTO containing login credentials
+     * @param bindingResult the result of binding the login data
+     * @param session       the current HTTP session
+     * @param model         the model to hold error messages
+     * @return a redirect to the user profile page or back to the login page if login fails
+     */
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute("loginDTO") UserLoginDTO loginDTO,
                         BindingResult bindingResult,
@@ -59,7 +84,6 @@ public class UserController {
             UserDTO user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
             if (user != null) {
                 session.setAttribute("loggedInUser", user);
-                // model.addAttribute("loggedInUser", user); // unnecessary?
                 return "redirect:/user/" + user.getId();
             } else {
                 model.addAttribute("error", "Invalid username or password");
@@ -71,9 +95,20 @@ public class UserController {
         }
     }
 
-
+    /**
+     * Processes signup requests for creating a new user.
+     *
+     * @param signupDTO     the UserSignupDTO containing signup information
+     * @param bindingResult the result of binding the signup data
+     * @param session       the current HTTP session
+     * @param model         the model to hold error messages
+     * @return a redirect to the user-created page if successful
+     */
     @PostMapping("/signup")
-    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO, BindingResult bindingResult,  HttpSession session, Model model) {
+    public String createUser(@Valid @ModelAttribute("signupDTO") UserSignupDTO signupDTO,
+                             BindingResult bindingResult,
+                             HttpSession session,
+                             Model model) {
         if (bindingResult.hasErrors()) {
             return "user/signup";
         }
@@ -89,6 +124,13 @@ public class UserController {
         return "redirect:/user/created";
     }
 
+    /**
+     * Displays a confirmation page for a successfully created user.
+     *
+     * @param session the current HTTP session
+     * @param model   the model to hold logged-in user data
+     * @return the view name for the user-created page
+     */
     @GetMapping("/created")
     public String showCreated(HttpSession session, Model model) {
         UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
@@ -96,6 +138,13 @@ public class UserController {
         return "user/created";
     }
 
+    /**
+     * Displays a list of all users.
+     *
+     * @param session the current HTTP session
+     * @param model   the model to hold user data
+     * @return the view name for the user list page
+     */
     @GetMapping("/list")
     public String getAllUsers(HttpSession session, Model model) {
         if (session.getAttribute("loggedInUser") == null) {
@@ -106,37 +155,52 @@ public class UserController {
         return "user/list";
     }
 
+    /**
+     * Displays a specific user's profile page.
+     *
+     * @param id    the ID of the user
+     * @param model the model to hold user data
+     * @return the view name for the user profile page or not found page if user does not exist
+     */
     @GetMapping("/{id}")
     public String getUserPage(@PathVariable String id, Model model) {
         Optional<UserDTO> user = userService.getUserById(id);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
+        return user.map(value -> {
+            model.addAttribute("user", value);
             return "user/profile";
-        } else {
-            return "user/notFound";
-        }
+        }).orElse("user/notFound");
     }
 
+    /**
+     * Displays the edit profile form for a user.
+     *
+     * @param id    the ID of the user
+     * @param model the model to hold user data
+     * @return the view name for the edit profile page or not found page if user does not exist
+     */
     @GetMapping("/{id}/edit")
     public String getEditProfileForm(@PathVariable String id, Model model) {
         Optional<UserDTO> user = userService.getUserById(id);
-        if (user.isPresent()) {
-            model.addAttribute("user", user.get());
+        return user.map(value -> {
+            model.addAttribute("user", value);
             return "user/edit-profile";
-        } else {
-            return "user/notFound";
-        }
+        }).orElse("user/notFound");
     }
 
-
-
+    /**
+     * Updates a user's profile.
+     *
+     * @param id      the ID of the user
+     * @param user    the updated UserDTO
+     * @param session the current HTTP session
+     * @param model   the model to hold error messages
+     * @return a redirect to the user's profile page or the error page if update fails
+     */
     @PutMapping("/{id}")
-    public String updateProfile(
-            @PathVariable String id,
-            @ModelAttribute UserDTO user,
-            // @ModelAttribute FileUploadDTO fileUpload.
-            HttpSession session,
-            Model model) {
+    public String updateProfile(@PathVariable String id,
+                                @ModelAttribute UserDTO user,
+                                HttpSession session,
+                                Model model) {
         try {
             UserDTO updatedUser = userService.updateUser(id, user);
             session.setAttribute("loggedInUser", updatedUser);
@@ -147,38 +211,57 @@ public class UserController {
         }
     }
 
+    /**
+     * Retrieves a user's profile picture.
+     *
+     * @param id the ID of the user
+     * @return a ResponseEntity containing the profile picture data or not found status
+     */
     @GetMapping("/{id}/profile-picture")
     @ResponseBody
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable String id) {
         UserDTO user = userService.getUserById(id).orElseThrow();
-
-        if (user.getProfilePicture() != null) {
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)  // or detect actual image type
-                    .body(user.getProfilePicture());
-        }
-        return ResponseEntity.notFound().build();
+        return user.getProfilePicture() != null
+                ? ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(user.getProfilePicture())
+                : ResponseEntity.notFound().build();
     }
 
+    /**
+     * Updates a user's profile picture.
+     *
+     * @param id          the ID of the user
+     * @param fileUpload  the FileUploadDTO containing the new profile picture
+     * @param model       the model to hold success messages
+     * @return a redirect to the user's profile page
+     * @throws IOException if an error occurs while processing the file
+     */
     @PutMapping("/{id}/profile-picture")
-    public String updateProfilePicture(
-            @PathVariable String id,
-            @ModelAttribute FileUploadDTO fileUpload,
-            Model model
-    ) throws IOException {
-
+    public String updateProfilePicture(@PathVariable String id,
+                                       @ModelAttribute FileUploadDTO fileUpload,
+                                       Model model) throws IOException {
         userService.updateProfilePicture(id, fileUpload.getFile().getBytes());
         model.addAttribute("message", "Profile picture updated successfully");
         return "redirect:/user/" + id;
     }
 
+    /**
+     * Deletes a user account.
+     *
+     * @param id             the ID of the user
+     * @param session        the current HTTP session
+     * @param sessionStatus  the session status for marking the session complete
+     * @param attrs          redirect attributes for success messages
+     * @return a redirect to the home page
+     */
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable String id, HttpSession session, SessionStatus sessionStatus, RedirectAttributes attrs) {
-        Optional<UserDTO> user = userService.getUserById(id);
-        if (user.isEmpty()) {
+    public String deleteUser(@PathVariable String id,
+                             HttpSession session,
+                             SessionStatus sessionStatus,
+                             RedirectAttributes attrs) {
+        if (userService.getUserById(id).isEmpty()) {
             return "user/notFound";
         }
-        session.setAttribute("loggedInUser", null);
+        session.invalidate();
         sessionStatus.setComplete();
         session.invalidate();
 
@@ -188,7 +271,14 @@ public class UserController {
         return "redirect:/";
     }
 
-    @PostMapping("/logout")
+    /**
+     * Logs out the currently logged-in user by invalidating the session.
+     *
+     * @param session       the current HTTP session
+     * @param sessionStatus the session status for marking the session as complete
+     * @return a redirect to the home page
+     */
+        @PostMapping("/logout")
     public String logout(HttpSession session, SessionStatus sessionStatus) {
         session.setAttribute("loggedInUser", null);
         sessionStatus.setComplete();
