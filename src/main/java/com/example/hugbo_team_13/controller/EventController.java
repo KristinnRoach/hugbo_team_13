@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +57,10 @@ public class EventController {
      * @return the name of the view for the event creation page
      */
     @GetMapping("/create")
-    public String getEventForm(HttpSession session, Model model) {
+    public String getEventForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("loggedInUser") == null) {
+            redirectAttributes.addFlashAttribute("error", "Please login before creating an event.");
+            model.addAttribute("prevPage", "/event/create");
             return "redirect:/user/login";
         }
         model.addAttribute("event", new EventDTO());

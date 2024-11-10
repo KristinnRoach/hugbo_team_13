@@ -1,6 +1,8 @@
 package com.example.hugbo_team_13.service;
 
+import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
+import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
@@ -62,7 +64,7 @@ public class GameService {
     /**
      * Retrieves a game by its ID.
      *
-     * 
+     *
      * @param id the ID of the game
      * @return an Optional containing the GameDTO if found, or empty if not.
      */
@@ -99,20 +101,25 @@ public class GameService {
      * @throws IllegalArgumentException if the game name is missing or no game is found with that name.
      */
     public boolean saveGame(GameDTO gameDTO) {
-        String name = gameDTO.getName();
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("Missing game name");
-        }
+        GameEntity game = convertToEntity(gameDTO);
 
-        if (!gameRepository.existsByName(name)) {
-            throw new IllegalArgumentException("No game found with name: " + name);
-        }
-
-        GameEntity existingGame = gameRepository.findByName(name);
+        GameEntity existingGame = gameRepository.findById(gameDTO.getId()).get();
+        existingGame.setRanks(gameDTO.getRanks());
         if (existingGame == null) { return false; }
 
         gameRepository.save(existingGame);
         return true;
+    }
+
+    private GameEntity convertToEntity(GameDTO dto) {
+        GameEntity entity = new GameEntity();
+        if (dto.getId() != null) {
+            entity.setId(dto.getId());
+        }
+        entity.setName(dto.getName());
+        entity.setPlatform(dto.getPlatform());
+        entity.setRanks(dto.getRanks());
+        return entity;
     }
 
     /**

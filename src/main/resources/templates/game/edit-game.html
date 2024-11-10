@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Event Page</title>
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+
+    <h1 class="page-title">Update skill levels of a game.</h1>
+
+    <!-- Editable form if an admin of this event is logged in // th:if="${event.adminIDs contains session.loggedInUser.id }" -->
+
+    <th:block th:if="${session.loggedInUser}">
+
+        <form class="flex-column"
+              th:action="@{/game/{id}(id=${game.id})}"
+              method="post"
+              th:object="${game}">
+            <input type="hidden" name="_method" value="PUT"/>
+
+            <div class="form-group">
+                <label for="lowestRank"><strong>Low rank name:</strong></label>
+                <input id="lowestRank" th:field="*{ranks[1]}" type="text" required>
+            </div>
+
+            <div class="form-group">
+                <label for="middleRank"><strong>Middle rank name:</strong></label>
+                <input id="middleRank" th:field="*{ranks[2]}" type="text" required>
+            </div>
+
+            <div class="form-group">
+                <label for="highestRank"><strong>High rank name:</strong></label>
+                <input id="highestRank" th:field="*{ranks[3]}" type="text" required>
+            </div>
+            <button type="submit" class="btn">Update skill levels</button>
+        </form>
+
+    </th:block>
+
+</div>
+</body>
+</html>
