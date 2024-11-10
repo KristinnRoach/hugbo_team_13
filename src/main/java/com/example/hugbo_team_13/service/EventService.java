@@ -27,7 +27,7 @@ public class EventService {
 
     /**
      * Constructor to inject the EventRepository.
-     * 
+     *
      * @param eventRepository the repository to handle event data.
      */
     public EventService(EventRepository eventRepository, UserService userService) {
@@ -35,14 +35,14 @@ public class EventService {
         this.userService = userService;
     }
 
-      /**
-     * Creates a new event from the given DTO. 
+    /**
+     * Creates a new event from the given DTO.
      * Validates that the event name is not empty and does not already exist.
-     * 
+     *
      * @param dto the data transfer object (DTO) representing the event.
      * @return the created EventDTO object.
      * @throws IllegalArgumentException if the event name is empty.
-     * @throws RuntimeException if the event name already exists.
+     * @throws RuntimeException         if the event name already exists.
      */
     public EventDTO createEvent(EventDTO dto) {
         // Todo: Validate input
@@ -62,18 +62,20 @@ public class EventService {
         // Return a new EventDTO
         return convertToDTO(savedEvent);
     }
-     /**
+
+    /**
      * Retrieves an event by its ID.
-     * 
+     *
      * @param id the ID of the event.
      * @return an Optional containing the EventDTO if found, or empty if not.
      */
     public Optional<EventDTO> getEventById(String id) {
         return eventRepository.findById(Long.valueOf(id)).map(this::convertToDTO);
     }
-      /**
+
+    /**
      * Retrieves an event by its name.
-     * 
+     *
      * @param name the name of the event.
      * @return the EventDTO if found, or null if no event is found.
      */
@@ -81,9 +83,10 @@ public class EventService {
         EventEntity event = eventRepository.findByName(name);
         return event != null ? convertToDTO(event) : null;
     }
-     /**
+
+    /**
      * Retrieves all events.
-     * 
+     *
      * @return a list of EventDTOs representing all events.
      */
     public List<EventDTO> getAllEvents() {
@@ -97,9 +100,9 @@ public class EventService {
     }
 
     /**
-     * Saves or updates an event based on the given DTO. 
+     * Saves or updates an event based on the given DTO.
      * If the event ID is not set, a new event is created.
-     * 
+     *
      * @param dto the data transfer object (DTO) representing the event.
      * @return the saved or updated EventDTO object.
      */
@@ -114,7 +117,7 @@ public class EventService {
 
     /**
      * Deletes an event by its ID.
-     * 
+     *
      * @param id the ID of the event to delete.
      */
     @Transactional
@@ -133,6 +136,11 @@ public class EventService {
         // Now you can safely delete the event
         eventRepository.delete(event);
     }
+
+    public List<EventEntity> findEventsByDateRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
+    }
+
 /*
     @Transactional
     public void deleteEvent(Long eventId) {
@@ -152,15 +160,17 @@ public class EventService {
     }
 
  */
+
     /**
      * Deletes all events from the database.
      */
     public void deleteAllEvents() {
         eventRepository.deleteAll();
     }
+
     /**
      * Converts an EventEntity to an EventDTO.
-     * 
+     *
      * @param entity the EventEntity to convert.
      * @return the corresponding EventDTO.
      */
@@ -179,9 +189,10 @@ public class EventService {
 
         return dto;
     }
-     /**
+
+    /**
      * Converts an EventDTO to an EventEntity.
-     * 
+     *
      * @param dto the EventDTO to convert.
      * @return the corresponding EventEntity.
      */
@@ -195,9 +206,10 @@ public class EventService {
         entity.setEndDateTime(combineDateAndTime(dto.getEndDate(), dto.getEndTime()));
         return entity;
     }
-     /**
+
+    /**
      * Combines a LocalDate and a LocalTime into a LocalDateTime.
-     * 
+     *
      * @param date the date part.
      * @param time the time part.
      * @return the combined LocalDateTime object.
