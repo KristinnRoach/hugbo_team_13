@@ -62,7 +62,7 @@ public class GameController {
      * Redirects to the login page if no user is logged in.
      *
      * @param session the current HTTP session
-     * @param model the model to hold a new GameDTO
+     * @param model   the model to hold a new GameDTO
      * @return the name of the view for the game creation page
      */
     @GetMapping("/create")
@@ -95,7 +95,7 @@ public class GameController {
      * @return the name of the view for the game list page
      */
     @GetMapping("/list")
-    public String getEvents(Model model) {
+    public String getGames(Model model) {
         model.addAttribute("games", gameService.getAllGames());
         return "game/list";
     }

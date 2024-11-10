@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title>Search Results</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Optional: Link to your styles -->
+</head>
+<body>
+<div class="flex-column" th:fragment="section">
+    <h1 class="page-title">Search Results: Events Between Dates</h1>
+
+    <!-- If there are no events found -->
+    <div th:if="${events.isEmpty()}">
+        <p>No events found for the selected date range.</p>
+    </div>
+
+    <!-- If there are events found -->
+    <div th:if="${!events.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Event Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="event : ${events}">
+                <td th:text="${event.id}">ID</td>
+                <td th:text="${event.name}">Event Name</td>
+                <td th:text="${event.startDateTime}">Start Date and Time</td>
+                <td th:text="${event.endDateTime}">End Date and Time</td>
+
+                <th:block th:if="${session.loggedInUser}">
+
+                    <td>
+                        <a th:href="@{/event/{id}(id=${event.id})}">View</a>
+                        <!-- todo: only admin can edit or delete -->
+                        <a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a>
+                        <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
+                            <input type="hidden" name="_method" value="DELETE"/>
+                            <button style="color: darkred" type="submit">Delete Event</button>
+                        </form>
+                    </td>
+
+                </th:block>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

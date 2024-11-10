@@ -1,15 +1,19 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Events List</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
 </head>
 <body>
 <div class="flex-column" th:fragment="section">
     <div class="flex-row">
-    <h1 class="page-title">Events List</h1>
+        <h1 class="page-title">Events List</h1>
         <th:block th:if="${session.loggedInUser != null}">
-            <form th:action="@{/game/deleteAll}" method="post" onsubmit="return confirm('Are you sure you want to delete all games? This action cannot be undone.')">
-                <button style="margin-left: 20px;" type="submit">Delete All Games</button>
+            <form th:action="@{/event/create}" method="get">
+                <button style="margin-left: 20px;" type="submit">Create Event</button>
+            </form>
+            <form th:action="@{/event/search-event}" method="get">
+                <button style="margin-left: 20px;" type="submit">Search Event</button>
             </form>
 
         </th:block>

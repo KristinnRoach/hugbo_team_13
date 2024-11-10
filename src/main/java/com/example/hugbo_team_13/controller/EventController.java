@@ -2,14 +2,19 @@ package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
+import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.service.EventService;
 import com.example.hugbo_team_13.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +33,7 @@ public class EventController {
      * Constructs an EventController with the specified EventService and UserService.
      *
      * @param eventService the service handling event operations
-     * @param userService the service handling user operations
+     * @param userService  the service handling user operations
      */
     public EventController(EventService eventService, UserService userService) {
         this.eventService = eventService;
@@ -53,9 +58,10 @@ public class EventController {
      * Redirects to the login page if no user is logged in.
      *
      * @param session the current HTTP session
-     * @param model the model to hold a new EventDTO
+     * @param model   the model to hold a new EventDTO
      * @return the name of the view for the event creation page
      */
+
     @GetMapping("/create")
     public String getEventForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         if (session.getAttribute("loggedInUser") == null) {
@@ -67,22 +73,52 @@ public class EventController {
         return "event/create";
     }
 
+    @GetMapping("/search-event")
+    public String getSearchEventForm(HttpSession session, Model model) {
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
+        model.addAttribute("event", new EventDTO());
+        return "event/search-event";
+    }
+
+    @GetMapping("/search-results")
+    public String getSearchResults(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Model model) {
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+
+        List<EventEntity> events = eventService.findEventsByDateRange(startDateTime, endDateTime);
+
+        // Add events to the model
+        model.addAttribute("events", events);
+
+        return "event/search-results";  // View name for the search results page
+    }
+
     /**
      * Handles POST requests for creating a new event.
      *
      * @param event the EventDTO representing the new event
      * @return a redirect to the event list page
      */
+
     @PostMapping("/create")
+
     public String createEvent(@ModelAttribute("event") EventDTO event) {
         eventService.createEvent(event);
         return "redirect:/event/list";
     }
 
+
     /**
      * Handles GET requests to display a specific event by ID.
      *
-     * @param id the ID of the event
+     * @param id    the ID of the event
      * @param model the model to hold event data
      * @return the name of the view for the event detail page
      */
@@ -97,7 +133,7 @@ public class EventController {
      * Handles POST requests for a user to attend a specific event by ID.
      * Redirects to the login page if no user is logged in.
      *
-     * @param id the ID of the event
+     * @param id      the ID of the event
      * @param session the current HTTP session
      * @return a redirect to the event detail page
      */
@@ -117,7 +153,7 @@ public class EventController {
     /**
      * Handles GET requests to display the list of attendees for a specific event.
      *
-     * @param id the ID of the event
+     * @param id    the ID of the event
      * @param model the model to hold event and attendee data
      * @return the name of the view for the event attendees page
      */
@@ -132,7 +168,7 @@ public class EventController {
     /**
      * Handles GET requests for the event edit form for a specific event by ID.
      *
-     * @param id the ID of the event
+     * @param id    the ID of the event
      * @param model the model to hold event data
      * @return the name of the view for the event edit page
      */
@@ -146,7 +182,7 @@ public class EventController {
     /**
      * Handles PUT requests to update a specific event by ID.
      *
-     * @param id the ID of the event to update
+     * @param id    the ID of the event to update
      * @param event the updated EventDTO
      * @return a redirect to the event list page
      */
@@ -172,4 +208,5 @@ public class EventController {
         eventService.deleteEvent(id);
         return "redirect:/event/list";
     }
+
 }
