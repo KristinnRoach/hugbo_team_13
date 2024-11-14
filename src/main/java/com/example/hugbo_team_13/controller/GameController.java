@@ -42,7 +42,8 @@ public class GameController {
 
     @GetMapping("/{id}/edit")
     public String getEditEventPage(@PathVariable("id") String id, Model model) {
-        GameDTO game = gameService.getGameById(id).orElseThrow();
+        GameDTO game =
+                gameService.getGameById(id).orElseThrow();
         model.addAttribute("game", game);
         return "game/edit-game";
     }
@@ -103,7 +104,7 @@ public class GameController {
         if (session.getAttribute("gameDoesNotExist") != null) {
             return "redirect:/event/create";
         }
-        return "redirect:/game/edit-game";
+        return "redirect:/game/list";
     }
 
     // Delete single game
