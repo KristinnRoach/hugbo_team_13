@@ -18,12 +18,9 @@
     </div>
 
 
-
-
     <table>
         <thead>
         <tr>
-            <th>ID</th>
             <th>Game Name</th>
             <th>Platform</th>
             <th>Skill Levels</th>
@@ -32,7 +29,6 @@
         </thead>
         <tbody>
         <tr th:each="game : ${games}">
-            <td th:text="${game.id}">ID</td>
             <td th:text="${game.name}">Game Name</td>
             <td th:text="${game.platform}">Platform</td>
             <td>
@@ -40,16 +36,18 @@
                     <li th:each="skill : ${game.ranks}" th:text="${skill.value}"></li>
                 </ul>
             </td>
-            <td>
-                <a th:href="@{/game/{id}/edit(id=${game.id})}">Edit</a>
-                <form th:action="@{/game/{id}(id=${game.id})}" method="post" style="display: inline;">
-                    <input type="hidden" name="_method" value="DELETE"/>
-                    <button style="color: darkred" type="submit" aria-label="Delete game">Delete Game</button>
-                </form>
+
+            <td class="flex-column">
+                <a th:href="@{/game/{id}(id=${game.id})}">View</a>
+                <a th:if="${session.loggedInUser != null}" th:href="@{/game/{id}/edit(id=${game.id})}">Edit</a>
             </td>
+
         </tr>
         </tbody>
     </table>
+
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
+
 </div>
 </body>
 </html>

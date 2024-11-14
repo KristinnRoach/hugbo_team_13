@@ -36,6 +36,9 @@ public class UserDTO {
     /**
      * The profile picture of the user, stored as a byte array.
      * Used for displaying the user's profile image in the UI.
-     */
+    */
     public byte[] profilePicture;
+
+    public String profilePictureType;
+
 }

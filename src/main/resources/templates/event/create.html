@@ -6,31 +6,42 @@
 <body>
 <div class="flex-column" th:fragment="section">
     <h1 class="page-title">Create Event</h1>
+    <div class="error-message" th:if="${error}" th:text="${error}"></div>
+
     <form class="form" method="post" th:action="@{/event/create}" th:object="${event}">
         <div>
             <label for="name">Name:</label>
-            <input type="text" id="name" th:field="*{name}" required>
+            <input type="text" id="name" name="name" th:field="*{name}" required>
             <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
         </div>
         <div>
+            <label for="game">Game:</label>
+            <input type="text" id="game" name="game" th:field="*{game.name}" required>
+            <span th:if="${#fields.hasErrors('game')}" th:errors="*{game.name}"></span>
+        </div>
+        <div>
             <label for="startDate">Start Date:</label>
-            <input type="date" id="startDate" th:field="*{startDate}" required>
+            <input type="date" id="startDate" name="startDate"
+                   th:value="${#temporals.format(#temporals.createToday(), 'yyyy-MM-dd')}" required>
             <span th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></span>
         </div>
         <div>
             <label for="endDate">End Date:</label>
-            <input type="date" id="endDate" th:field="*{endDate}" required>
+            <input type="date" id="endDate" name="endDate"
+                   th:value="${#temporals.format(#temporals.createToday().plusDays(1), 'yyyy-MM-dd')}" required>
             <span th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></span>
         </div>
 
         <div>
             <label for="startTime">Start Time:</label>
-            <input type="time" id="startTime" th:field="*{startTime}" required>
+            <input type="time" id="startTime" name="startTime"
+                   th:value="${#temporals.format(#temporals.createNow(), 'HH:mm')}" required>
             <span th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></span>
         </div>
         <div>
             <label for="endTime">End Time:</label>
-            <input type="time" id="endTime" th:field="*{endTime}" required>
+            <input type="time" id="endTime" name="endTime"
+                   th:value="${#temporals.format(#temporals.createNow().plusHours(1), 'HH:mm')}" required>
             <span th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></span>
         </div>
 

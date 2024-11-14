@@ -23,8 +23,8 @@
     <table>
         <thead>
         <tr>
-            <th>ID</th>
             <th>Event Name</th>
+            <th>Game</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Start Time</th>
@@ -35,8 +35,8 @@
         </thead>
         <tbody>
         <tr th:each="event : ${events}">
-            <td th:text="${event.id}">ID</td>
-            <td th:text="${event.name}">Username</td>
+            <td th:text="${event.name}">Event Name</td>
+            <td th:text="${event.getGame().getName()}">Game</td>
             <td th:text="${event.startDate}">Start Date</td>
             <td th:text="${event.endDate}">End Date</td>
             <td th:text="${event.startTime}">Start Time</td>
@@ -48,10 +48,11 @@
                     <a th:href="@{/event/{id}(id=${event.id})}">View</a>
                     <!-- todo: only admin can edit or delete -->
                     <a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a>
-                    <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
-                        <input type="hidden" name="_method" value="DELETE"/>
-                        <button style="color: darkred" type="submit">Delete Event</button>
+
+                    <form th:action="@{/event/{id}/attend(id=${event.id})}" method="post">
+                        <button type="submit" class="btn">Attend Event</button>
                     </form>
+
                 </td>
 
             </th:block>
@@ -59,7 +60,7 @@
         </tr>
         </tbody>
     </table>
-
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
 </div>
 </body>
 </html>

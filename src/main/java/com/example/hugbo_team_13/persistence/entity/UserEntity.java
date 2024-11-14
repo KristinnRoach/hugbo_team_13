@@ -65,9 +65,14 @@ public class UserEntity {
      * The profile picture of the user.
      * Stored as a byte array.
      */
-    @Column
     @Lob
+    @Column(name = "profile_picture")
     private byte[] profilePicture;
+
+    /**
+     *  The profile picture type (e.g., "image/jpeg")
+     */
+    private String profilePictureType;
 
     // Events this user is attending
     @ManyToMany

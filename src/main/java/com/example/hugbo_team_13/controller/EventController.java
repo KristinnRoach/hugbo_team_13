@@ -1,9 +1,12 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.EventDTO;
+import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
+import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.service.EventService;
+import com.example.hugbo_team_13.service.GameService;
 import com.example.hugbo_team_13.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,6 +31,7 @@ public class EventController {
 
     private final EventService eventService;
     private final UserService userService;
+    private final GameService gameService;
 
     /**
      * Constructs an EventController with the specified EventService and UserService.
@@ -35,9 +39,10 @@ public class EventController {
      * @param eventService the service handling event operations
      * @param userService  the service handling user operations
      */
-    public EventController(EventService eventService, UserService userService) {
+    public EventController(EventService eventService, UserService userService, GameService gameService) {
         this.eventService = eventService;
         this.userService = userService;
+        this.gameService = gameService;
     }
 
     /**
@@ -69,7 +74,15 @@ public class EventController {
             model.addAttribute("prevPage", "/event/create");
             return "redirect:/user/login";
         }
-        model.addAttribute("event", new EventDTO());
+        EventDTO event = new EventDTO();
+        GameDTO game = new GameDTO();
+        // if redirecting from game/create, auto fill the game name
+        if (session.getAttribute("gameDoesNotExist") != null) {
+            game = (GameDTO) session.getAttribute("gameDoesNotExist");
+            session.removeAttribute("gameDoesNotExist");
+        }
+        event.setGame(game);
+        model.addAttribute("event", event);
         return "event/create";
     }
 
@@ -108,11 +121,22 @@ public class EventController {
      */
 
     @PostMapping("/create")
-
-    public String createEvent(@ModelAttribute("event") EventDTO event) {
-        eventService.createEvent(event);
-        return "redirect:/event/list";
+    public String createEvent(@ModelAttribute("event") EventDTO event, HttpSession session, Model model) {
+        // check if game exists in db
+        if (gameService.getGameByName(event.getGame().getName()) == null) {
+            session.setAttribute("gameDoesNotExist", event.getGame());
+            return "redirect:/game/create";
+        }
+        try {
+            eventService.createEvent(event);
+            session.removeAttribute("gameDoesNotExist"); // remove if exists
+            return "redirect:/event/list";
+        } catch (ResourceAlreadyExistsException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "event/create";  // Stay on form with error message
+        }
     }
+
 
 
     /**
@@ -187,10 +211,15 @@ public class EventController {
      * @return a redirect to the event list page
      */
     @PutMapping("/{id}")
-    public String updateEvent(@PathVariable("id") String id, @ModelAttribute("event") EventDTO event) {
+    public String updateEvent(@PathVariable("id") String id, @ModelAttribute("event") EventDTO event, Model model) {
         event.setId(id);
-        eventService.saveEvent(event);
-        return "redirect:/event/list";
+        try {
+            eventService.saveEvent(event);
+            return "redirect:/event/list";
+        } catch (ResourceAlreadyExistsException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "event/edit-event";  // Stay on form with error message
+        }
     }
 
     /**

@@ -1,16 +1,14 @@
 package com.example.hugbo_team_13.service;
 
-import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
-import com.example.hugbo_team_13.persistence.entity.EventEntity;
+import com.example.hugbo_team_13.helper.PictureData;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
-import com.example.hugbo_team_13.persistence.entity.RankEntity;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
 import com.example.hugbo_team_13.persistence.repository.RankRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,8 +56,10 @@ public class GameService {
     }
 
     private GameDTO convertGameToDto(GameEntity game) {
-        return new GameDTO(game.getId(), game.getName(), game.getPlatform(), game.getRanks());
+        return new GameDTO(game);
     }
+
+
 
     /**
      * Retrieves a game by its ID.
@@ -68,8 +68,8 @@ public class GameService {
      * @param id the ID of the game
      * @return an Optional containing the GameDTO if found, or empty if not.
      */
-    public Optional<GameDTO> getGameById(Long id) {
-        return gameRepository.findById(id).map(this::convertGameToDto);
+    public Optional<GameDTO> getGameById(String id) {
+        return gameRepository.findById(Long.parseLong(id)).map(this::convertGameToDto);
     }
 
     /**
@@ -101,20 +101,52 @@ public class GameService {
      * @throws IllegalArgumentException if the game name is missing or no game is found with that name.
      */
     public boolean saveGame(GameDTO gameDTO) {
-        GameEntity game = convertToEntity(gameDTO);
-
-        GameEntity existingGame = gameRepository.findById(gameDTO.getId()).get();
-        existingGame.setRanks(gameDTO.getRanks());
-        if (existingGame == null) { return false; }
-
-        gameRepository.save(existingGame);
+        GameEntity game = gameRepository.findById(Long.valueOf(gameDTO.getId())).orElse(new GameEntity());
+        game.setRanks(gameDTO.getRanks());
+        if (gameDTO.getImg() != null) {
+            game.setImg(gameDTO.getImg());
+            game.setImgType(gameDTO.getImgType());
+        }
+        gameRepository.save(game);
         return true;
     }
 
-    private GameEntity convertToEntity(GameDTO dto) {
+    public GameDTO updateGame(GameDTO gameDTO) {
+        GameEntity game = gameRepository.findById(Long.valueOf(gameDTO.getId())).orElse(new GameEntity());
+
+        Optional.ofNullable(gameDTO.getName()).ifPresent(game::setName);
+        Optional.ofNullable(gameDTO.getPlatform()).ifPresent(game::setPlatform);
+        Optional.ofNullable(gameDTO.getRanks()).ifPresent(game::setRanks);
+        Optional.ofNullable(gameDTO.getImg()).ifPresent(game::setImg);
+        Optional.ofNullable(gameDTO.getImgType()).ifPresent(game::setImgType);
+
+        gameRepository.save(game);
+        return convertGameToDto(game);
+    }
+
+    public Optional<PictureData> getImg(String id) {
+        return gameRepository.findById(Long.parseLong(id))
+                .filter(game -> game.getImg() != null)
+                .map(game -> new PictureData(game.getImg(),
+                        game.getImgType()));
+    }
+
+    public void updateImg(String id, MultipartFile file) throws IOException {
+        gameRepository.findById(Long.parseLong(id)).ifPresent(game -> {
+            try {
+                game.setImg(file.getBytes());
+                game.setImgType(file.getContentType());
+                gameRepository.save(game);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to process file", e);
+            }
+        });
+    }
+
+    protected GameEntity convertToEntity(GameDTO dto) {
         GameEntity entity = new GameEntity();
         if (dto.getId() != null) {
-            entity.setId(dto.getId());
+            entity.setId(Long.valueOf(dto.getId()));
         }
         entity.setName(dto.getName());
         entity.setPlatform(dto.getPlatform());
@@ -127,8 +159,8 @@ public class GameService {
      * 
      * @param id the ID of the game to delete.
      */
-    public void deleteGame(Long id) {
-        gameRepository.deleteById(id);
+    public void deleteGame(String id) {
+        gameRepository.deleteById(Long.parseLong(id));
     }
 
 

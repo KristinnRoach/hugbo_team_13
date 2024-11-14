@@ -1,14 +1,17 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.service.GameService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * Controller for managing games in the application.
@@ -29,16 +32,17 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    // Delete single game
-    @DeleteMapping("/{id}")
-    public String deleteGame(@PathVariable Long id) {
-        gameService.deleteGame(id); // Implement delete logic in service
-        return "redirect:/game/list";
+
+    @GetMapping("/{id}")
+    public String getGamePage(Model model, @PathVariable String id) {
+        GameDTO game = gameService.getGameById(id).orElseThrow();
+        model.addAttribute("game", game);
+        return "game/game-page";
     }
 
     @GetMapping("/{id}/edit")
     public String getEditEventPage(@PathVariable("id") String id, Model model) {
-        GameDTO game = gameService.getGameById(Long.parseLong(id)).orElseThrow();
+        GameDTO game = gameService.getGameById(id).orElseThrow();
         model.addAttribute("game", game);
         return "game/edit-game";
     }
@@ -52,9 +56,8 @@ public class GameController {
      */
     @PutMapping("/{id}")
     public String updateGame(@PathVariable("id") String id, @ModelAttribute("game") GameDTO game) {
-        game.setId(Long.parseLong(id));
-        gameService.saveGame(game);
-        return "redirect:/game/list";
+        gameService.updateGame(game);
+        return "redirect:/game/" + id;
     }
 
     /**
@@ -72,7 +75,17 @@ public class GameController {
             model.addAttribute("prevPage", "/game/create");
             return "redirect:/user/login";
         }
-        model.addAttribute("game", new GameDTO());
+        GameDTO game = new GameDTO();
+        String headerText = "Add a new game:";
+
+        if (session.getAttribute("gameDoesNotExist") != null) {
+            game = (GameDTO) session.getAttribute("gameDoesNotExist");
+            // session.removeAttribute("gameDoesNotExist"); // uncomment if needed
+            headerText = String.format("The game %s has not yet been added to Skill-Share.\nPlease add the game to continue.", game.getName());
+        }
+        model.addAttribute("game", game);
+        model.addAttribute("headerText", headerText);
+
         return "game/create";
     }
 
@@ -83,8 +96,20 @@ public class GameController {
      * @return a redirect to the game list page
      */
     @PostMapping("/create")
-    public String createGame(@ModelAttribute("game") GameDTO gameDTO) {
-        gameService.createGame(gameDTO);
+    public String createGame(@ModelAttribute("game") GameDTO gameDTO, HttpSession session, Model model) {
+        GameDTO savedGame = gameService.createGame(gameDTO);
+        model.addAttribute("game", savedGame);
+
+        if (session.getAttribute("gameDoesNotExist") != null) {
+            return "redirect:/event/create";
+        }
+        return "redirect:/game/edit-game";
+    }
+
+    // Delete single game
+    @DeleteMapping("/{id}")
+    public String deleteGame(@PathVariable String id) {
+        gameService.deleteGame(id); // Implement delete logic in service
         return "redirect:/game/list";
     }
 
@@ -98,6 +123,37 @@ public class GameController {
     public String getGames(Model model) {
         model.addAttribute("games", gameService.getAllGames());
         return "game/list";
+    }
+
+    @GetMapping(value = "/{id}/img",  produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> getImg(@PathVariable String id) {
+        GameDTO game = gameService.getGameById(id).orElseThrow();
+        if (game.getImg() != null) {
+            // Get the stored content type, or default to JPEG if not available
+            MediaType mediaType = MediaType.IMAGE_JPEG;
+            if (game.getImgType() != null) {
+                mediaType = MediaType.parseMediaType(game.getImgType());
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .body(game.getImg());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/img")
+    public String updateGameImage(@PathVariable String id,
+                                       @RequestParam("file") MultipartFile file,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            gameService.updateImg(id, file);
+            redirectAttributes.addFlashAttribute("message", "Game image updated successfully!");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to update game image.");
+        }
+        return "redirect:/game/" + id + "/edit";
     }
 
 }

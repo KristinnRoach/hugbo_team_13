@@ -6,9 +6,8 @@
 <body>
 <div class="flex-column" th:fragment="section">
 
-    <h1 class="page-title">Update skill levels of a game.</h1>
-
-    <!-- Editable form if an admin of this event is logged in // th:if="${event.adminIDs contains session.loggedInUser.id }" -->
+    <h1 class="page-title">Update game</h1>
+    <div class="error-message" th:if="${error}" th:text="${error}"></div>
 
     <th:block th:if="${session.loggedInUser}">
 
@@ -20,22 +19,53 @@
 
             <div class="form-group">
                 <label for="lowestRank"><strong>Low rank name:</strong></label>
-                <input id="lowestRank" th:field="*{ranks[1]}" type="text" required>
+                <input id="lowestRank" th:field="*{ranks[0]}" type="text" required>
             </div>
 
             <div class="form-group">
                 <label for="middleRank"><strong>Middle rank name:</strong></label>
-                <input id="middleRank" th:field="*{ranks[2]}" type="text" required>
+                <input id="middleRank" th:field="*{ranks[1]}" type="text" required>
             </div>
 
             <div class="form-group">
                 <label for="highestRank"><strong>High rank name:</strong></label>
-                <input id="highestRank" th:field="*{ranks[3]}" type="text" required>
+                <input id="highestRank" th:field="*{ranks[2]}" type="text" required>
             </div>
             <button type="submit" class="btn">Update skill levels</button>
         </form>
 
+        <div class="picture-container">
+            <img th:if="${game.getImg() != null}"
+                 th:src="@{'/game/' + ${game.getId()} + '/img'}"
+                 alt="Game Picture"
+                 style="max-width: 300px; margin: 0 auto; padding: 1rem; display: flex; justify-content: center; align-items: center"/>
+
+            <!-- Message when no picture exists -->
+            <p th:unless="${game.getImg() != null}">No image available for this game</p>
+
+            <!-- Upload img Form -->
+            <form th:if="${session.loggedInUser}" th:action="@{'/game/' + ${game.getId()} + '/img'}"
+                  method="post"
+                  enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*">
+                <button type="submit">Upload an image!</button>
+            </form>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <br/>
+
+        <form th:action="@{/game/{id}(id=${game.id})}" method="post" style="display: inline;">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button style="color: darkred" type="submit" aria-label="Delete game">Delete Game</button>
+        </form>
+
+
     </th:block>
+
 
 </div>
 </body>

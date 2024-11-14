@@ -1,5 +1,6 @@
 package com.example.hugbo_team_13.dto;
 
+import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,7 @@ public class GameDTO {
     /**
      * Unique identifier for the game.
      */
-    private Long id;
+    private String id;
 
     /**
      * Name of the game.
@@ -32,23 +33,35 @@ public class GameDTO {
     private String platform;
 
     /**
+     * Optional description of the game as a String
+     */
+    private String description;
+
+    /**
+     * The profile picture of the user, stored as a byte array.
+     * Used for displaying the user's profile image in the UI.
+     */
+    private byte[] img;
+    private String imgType;
+
+    /**
      * Mapping of ranks within the game.
      * The key is the rank level, and the value is the description or title of that rank.
      */
     private Map<Integer, String> ranks = new HashMap<>();
 
     /**
-     * Constructs a new GameDTO with the specified values.
+     * Constructs a new GameDTO from a GameEntity from the persistence layer.
      *
-     * @param id       The unique identifier for the game.
-     * @param name     The name of the game.
-     * @param platform The platform for the game.
-     * @param ranks    A map of ranks within the game.
+     * @param gameEntity  The Game Entity corresponding to the game.
      */
-    public GameDTO(Long id, String name, String platform, Map<Integer, String> ranks) {
-        this.id = id;
-        this.name = name;
-        this.platform = platform;
-        this.ranks = ranks;
+    public GameDTO(GameEntity gameEntity) {
+        this.id = String.valueOf(gameEntity.getId());
+        this.name = gameEntity.getName();
+        this.platform = gameEntity.getPlatform();
+        this.ranks = gameEntity.getRanks();
+        this.img = gameEntity.getImg();
+        this.imgType = gameEntity.getImgType();
+        this.description = "No description available yet";
     }
 }
