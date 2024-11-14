@@ -60,12 +60,12 @@
 
         <form th:action="@{/game/{id}(id=${game.id})}" method="post" style="display: inline;">
             <input type="hidden" name="_method" value="DELETE"/>
-            <button style="color: darkred" type="submit" aria-label="Delete game">Delete Game</button>
+            <button class="delete-button" type="submit" aria-label="Delete game">Delete Game</button>
         </form>
-
 
     </th:block>
 
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
 
 </div>
 </body>

@@ -32,12 +32,12 @@
             <td th:text="${game.name}">Game Name</td>
             <td th:text="${game.platform}">Platform</td>
             <td>
-                <ul>
-                    <li th:each="skill : ${game.ranks}" th:text="${skill.value}"></li>
+                <ul class="flex-row" style="align-content: space-evenly; gap: 1rem; margin: 0; padding: 0;">
+                    <li style="margin: 0; padding: 0;" th:each="skill : ${game.ranks}" th:text="${skill.value}"></li>
                 </ul>
             </td>
 
-            <td class="flex-column">
+            <td>
                 <a th:href="@{/game/{id}(id=${game.id})}">View</a>
                 <a th:if="${session.loggedInUser != null}" th:href="@{/game/{id}/edit(id=${game.id})}">Edit</a>
             </td>

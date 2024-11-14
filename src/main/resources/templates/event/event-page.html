@@ -24,6 +24,7 @@
  <!--   <p><strong>Attendees:</strong> <span th:text="${event.attendees.size()}">0</span></p> -->
 
 
+
     <form th:action="@{/event/{id}/attend(id=${event.id})}" method="post">
         <button type="submit" class="btn">Attend Event</button>
     </form>

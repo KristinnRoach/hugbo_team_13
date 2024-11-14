@@ -3,7 +3,7 @@ package com.example.hugbo_team_13.service;
 
 import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
-import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
+//import com. example. hugbo_team_13.exception._ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,13 +53,13 @@ public class EventService {
      * @throws IllegalArgumentException if the event name is empty.
      * @throws RuntimeException         if the event name already exists.
      */
-    public EventDTO createEvent(EventDTO dto) {
+    public EventDTO createEvent(EventDTO dto) throws Exception {
         String name = dto.getName();
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Event name cannot be empty");
         }
         if (eventRepository.existsByName(name)) {
-            throw new ResourceAlreadyExistsException("Event name already exists");
+           throw new Exception("Event name already exists"); // ResourceAlreadyExistsException("Event name already exists");
         }
 
         // Create EventEntity
@@ -140,8 +141,9 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public List<EventEntity> findEventsByDateRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
+    public List<EventDTO> findEventsByDateRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        List<EventEntity> entities = eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
+        return entities.stream().map(this::convertToDTO).toList();
     }
 
 
@@ -153,7 +155,6 @@ public class EventService {
     }
 
     /**
-     * Converts an EventEntity to an EventDTO.
      *
      * @param entity the EventEntity to convert.
      * @return the corresponding EventDTO.

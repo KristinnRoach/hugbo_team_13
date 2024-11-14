@@ -3,8 +3,7 @@ package com.example.hugbo_team_13.controller;
 import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
-import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
-import com.example.hugbo_team_13.persistence.entity.EventEntity;
+// import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.service.EventService;
 import com.example.hugbo_team_13.service.GameService;
 import com.example.hugbo_team_13.service.UserService;
@@ -105,7 +104,7 @@ public class EventController {
         LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
 
 
-        List<EventEntity> events = eventService.findEventsByDateRange(startDateTime, endDateTime);
+        List<EventDTO> events = eventService.findEventsByDateRange(startDateTime, endDateTime);
 
         // Add events to the model
         model.addAttribute("events", events);
@@ -131,8 +130,8 @@ public class EventController {
             eventService.createEvent(event);
             session.removeAttribute("gameDoesNotExist"); // remove if exists
             return "redirect:/event/list";
-        } catch (ResourceAlreadyExistsException ex) {
-            model.addAttribute("error", ex.getMessage());
+        } catch (Exception ex) { // ResourceAlreadyExistsException
+            model.addAttribute("error", ex); // getMessage()
             return "event/create";  // Stay on form with error message
         }
     }
@@ -216,7 +215,7 @@ public class EventController {
         try {
             eventService.saveEvent(event);
             return "redirect:/event/list";
-        } catch (ResourceAlreadyExistsException ex) {
+        } catch (Exception ex) { // (ResourceAlreadyExistsException ex) {
             model.addAttribute("error", ex.getMessage());
             return "event/edit-event";  // Stay on form with error message
         }

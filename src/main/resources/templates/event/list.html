@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Events List</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css"/>
 </head>
 <body>
 <div class="flex-column" th:fragment="section">
@@ -35,12 +34,12 @@
         </thead>
         <tbody>
         <tr th:each="event : ${events}">
-            <td th:text="${event.name}">Event Name</td>
+            <td th:text="${event.getName()}">Event Name</td>
             <td th:text="${event.getGame().getName()}">Game</td>
-            <td th:text="${event.startDate}">Start Date</td>
-            <td th:text="${event.endDate}">End Date</td>
-            <td th:text="${event.startTime}">Start Time</td>
-            <td th:text="${event.endTime}">End Time</td>
+            <td th:text="${event.getStartDate()}">Start Date</td>
+            <td th:text="${event.getEndDate()}">End Date</td>
+            <td th:text="${event.getStartTime()}">Start Time</td>
+            <td th:text="${event.getEndTime()}">End Time</td>
 
             <th:block th:if="${session.loggedInUser}">
 

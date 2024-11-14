@@ -27,23 +27,31 @@ table, form {
 table {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   gap: 1rem;
   border-collapse: collapse;
-
-  margin: 0 auto;
+  background-color: #8ea2d9;
+  margin: 0;
   padding: 1rem;
 }
 
-table th, td {
-  padding: 12px;
-  text-align: left;
-  border: 1px solid #ddd;
-}
 
 table th {
+  padding: 8px;
+}
+
+table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+}
+
+table thead {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #ddd;
+  border-radius: 15px;
 }
 
 ul li {
@@ -76,17 +84,15 @@ ul li {
   margin: 0 auto;
 }
 
-.profile {
-  gap: 1rem;
-}
 
 .flex-column {
   margin: 0 auto;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  row-gap: 1rem;
 }
 
 .flex-row {
@@ -103,7 +109,7 @@ ul li {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem;
   margin: 1rem auto 0 auto;
 }
 
@@ -153,6 +159,37 @@ ul li {
   max-width: 700px;
   min-height: 100px;
   max-height: 210px;
+}
+
+/* Back Button */
+
+.back-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5em;
+  background-color: #acbff1;
+  border: none;
+  color: black;
+  padding: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.delete-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b5bbcc;
+  border: solid 1px #9c0000;
+  color: #9c0000;
+  padding: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 15px;
+  text-align: center;
 }
 
 /* LOGIN */

@@ -51,10 +51,12 @@
 
         <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
             <input type="hidden" name="_method" value="DELETE"/>
-            <button style="color: darkred" type="submit">Delete Event</button>
+            <button class="delete-button" type="submit">Delete Event</button>
         </form>
 
     </th:block>
+
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
 
 </div>
 </body>
