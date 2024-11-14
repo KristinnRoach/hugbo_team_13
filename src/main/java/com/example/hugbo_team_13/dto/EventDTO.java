@@ -31,6 +31,12 @@ public class EventDTO {
     public String name;
 
     /**
+     * the game to be played.
+     */
+    public GameDTO game;
+    //public String game;
+
+    /**
      * The start date of the event.
      */
     public LocalDate startDate;
@@ -50,7 +56,7 @@ public class EventDTO {
      */
     public LocalTime endTime;
 
-    private Set<UserDTO> attendees = new HashSet<>();  // Add this
+    private Set<UserDTO> attendees = new HashSet<>();
 
 
 }

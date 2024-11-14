@@ -35,29 +35,28 @@
         </form>
 
         <!-- Separate form for profile picture -->
-        <form class="profile-form"
-              th:action="@{/user/{id}/profile-picture(id=${user.id})}"
-              method="post"
-              enctype="multipart/form-data">
-            <input type="hidden" name="_method" value="PUT"/>
 
-            <div class="form-group">
-                <label for="profilePicture"><strong>Profile Picture:</strong></label>
-                <input type="file" id="profilePicture" name="file" accept="image/*"/>
-                <!-- Show current profile picture -->
-                <!--
-              <img th:if="${user.profilePicture}"
-                   th:src="@{'data:image/jpeg;base64,' + ${@fileConverter.bytesToBase64(user.profilePicture)}}"
-                   alt="Profile Picture"/>
-              -->
-                <img th:if="${user.profilePicture}"
-                     th:src="@{/user/{id}/profile-picture(id=${user.id})}"
-                     alt="Current Profile Picture"
-                     style="max-width: 200px; margin-top: 10px;"/>
-            </div>
+        <div class="profile-picture-container">
+            <img th:if="${user.profilePicture != null}"
+                 th:src="@{'/user/' + ${user.id} + '/profile-picture'}"
+                 alt="Profile Picture"
+                 style="max-width: 300px; margin: 0 auto; padding: 1rem; display: flex; justify-content: center; align-items: center"/>
 
-            <button type="submit" class="btn">Update Profile Picture</button>
-        </form>
+            <!-- Message when no picture exists -->
+            <p th:unless="${user.profilePicture != null}">No profile picture available</p>
+
+            <!-- Upload Form -->
+            <form th:if="${session.loggedInUser.id == user.id}" th:action="@{'/user/' + ${user.id} + '/profile-picture'}"
+                  method="post"
+                  enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required>
+                <button type="submit">Upload Profile Picture</button>
+            </form>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
         <form th:if="${user.id == session.loggedInUser.id}" th:action="@{/user/{id}(id=${user.id})}" method="post" style="display: inline;">
             <input type="hidden" name="_method" value="DELETE"/>

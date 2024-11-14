@@ -3,12 +3,15 @@ package com.example.hugbo_team_13.service;
 import com.example.hugbo_team_13.converter.FileConverter;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
+import com.example.hugbo_team_13.helper.PictureData;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import com.example.hugbo_team_13.persistence.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -125,12 +128,29 @@ public class UserService {
             user.setEmail(newDTO.getEmail());
         }
 
-        if (newDTO.getProfilePicture() != null && newDTO.getProfilePicture().length > 0) {
-            user.setProfilePicture(newDTO.getProfilePicture());
-        }
+        // note: the profile picture is handled in updateProfilePicture
 
         UserEntity savedUser = userRepository.save(user);
         return convertToDTO(savedUser);
+    }
+
+    public Optional<PictureData> getProfilePicture(String id) {
+        return userRepository.findById(Long.parseLong(id))
+                .filter(user -> user.getProfilePicture() != null)
+                .map(user -> new PictureData(user.getProfilePicture(),
+                        user.getProfilePictureType()));
+    }
+
+    public void updateProfilePicture(String id, MultipartFile file) throws IOException {
+        userRepository.findById(Long.parseLong(id)).ifPresent(user -> {
+            try {
+                user.setProfilePicture(file.getBytes());
+                user.setProfilePictureType(file.getContentType());
+                userRepository.save(user);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to process file", e);
+            }
+        });
     }
 
     /**
@@ -162,21 +182,7 @@ public class UserService {
         userRepository.deleteAll();
     }
 
-    /**
-     * Updates the profile picture of a user.
-     *
-     * @param id             the ID of the user whose profile picture is to be updated.
-     * @param profilePicture the new profile picture as a byte array.
-     * @throws RuntimeException if the user is not found.
-     */
 
-    public void updateProfilePicture(String id, byte[] profilePicture) {
-        UserEntity user = userRepository.findById(Long.parseLong(id))
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        user.setProfilePicture(profilePicture);
-        userRepository.save(user);
-    }
 
     public void attendEvent(String userID, String eventID) {
         if (userID.isEmpty() || eventID.isEmpty()) { return; }
@@ -212,7 +218,8 @@ public class UserService {
         dto.setEmail(user.getEmail());
 
         if (user.getProfilePicture() != null && user.getProfilePicture().length > 0) {
-            user.setProfilePicture(user.getProfilePicture());
+            dto.setProfilePicture(user.getProfilePicture());
+            dto.setProfilePictureType(user.getProfilePictureType());
         }
 
         return dto;

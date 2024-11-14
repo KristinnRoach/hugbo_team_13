@@ -1,6 +1,5 @@
 package com.example.hugbo_team_13.controller;
 
-import com.example.hugbo_team_13.dto.FileUploadDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserLoginDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
@@ -14,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -211,38 +211,6 @@ public class UserController {
         }
     }
 
-    /**
-     * Retrieves a user's profile picture.
-     *
-     * @param id the ID of the user
-     * @return a ResponseEntity containing the profile picture data or not found status
-     */
-    @GetMapping("/{id}/profile-picture")
-    @ResponseBody
-    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String id) {
-        UserDTO user = userService.getUserById(id).orElseThrow();
-        return user.getProfilePicture() != null
-                ? ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(user.getProfilePicture())
-                : ResponseEntity.notFound().build();
-    }
-
-    /**
-     * Updates a user's profile picture.
-     *
-     * @param id          the ID of the user
-     * @param fileUpload  the FileUploadDTO containing the new profile picture
-     * @param model       the model to hold success messages
-     * @return a redirect to the user's profile page
-     * @throws IOException if an error occurs while processing the file
-     */
-    @PutMapping("/{id}/profile-picture")
-    public String updateProfilePicture(@PathVariable String id,
-                                       @ModelAttribute FileUploadDTO fileUpload,
-                                       Model model) throws IOException {
-        userService.updateProfilePicture(id, fileUpload.getFile().getBytes());
-        model.addAttribute("message", "Profile picture updated successfully");
-        return "redirect:/user/" + id;
-    }
 
     /**
      * Deletes a user account.
@@ -286,31 +254,35 @@ public class UserController {
         return "redirect:/";
     }
 
+    @GetMapping(value = "/{id}/profile-picture",  produces = MediaType.IMAGE_JPEG_VALUE)
+    @ResponseBody
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable String id) {
+        UserDTO user = userService.getUserById(id).orElseThrow();
+        if (user.getProfilePicture() != null) {
+            // Get the stored content type, or default to JPEG if not available
+            MediaType mediaType = MediaType.IMAGE_JPEG;
+           if (user.getProfilePictureType() != null) {
+               mediaType = MediaType.parseMediaType(user.getProfilePictureType());
+           }
 
-    /*
-    @GetMapping("/{id}/profile-picture")
-    public String getProfilePicture(@PathVariable String id, Model model) {
-        byte[] image = userService.getProfilePicture(id);
-        model.addAttribute("profilePicture", image);
-        return "user/profilePicture";
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(user.getProfilePicture());
     }
+    return ResponseEntity.notFound().build();
+}
 
-        @PostMapping("/delete-all")
-    public String deleteAllUsers() {
-        userService.deleteAllUsers();
-        return "redirect:/";
-    }
-
-
-        @PostMapping("/{id}/profile-picture")
-    public String uploadProfilePicture(@PathVariable String id,
+    @PostMapping("/{id}/profile-picture")
+    public String updateProfilePicture(@PathVariable String id,
                                        @RequestParam("file") MultipartFile file,
-                                       Model model) throws IOException {
-        byte[] imageBytes = file.getBytes();
-        userService.updateProfilePicture(id, imageBytes);
-        model.addAttribute("message", "Profile picture updated successfully");
-        return "user/profilePictureUpdated";
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            userService.updateProfilePicture(id, file);
+            redirectAttributes.addFlashAttribute("message", "Profile picture updated successfully!");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to update profile picture.");
+        }
+        return "redirect:/user/" + id + "/edit";
     }
-    */
 
 }

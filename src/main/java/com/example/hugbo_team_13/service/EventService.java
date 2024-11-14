@@ -2,8 +2,12 @@ package com.example.hugbo_team_13.service;
 
 
 import com.example.hugbo_team_13.dto.EventDTO;
+import com.example.hugbo_team_13.dto.GameDTO;
+import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
+import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
+import com.example.hugbo_team_13.persistence.repository.GameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,15 +28,19 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserService userService;
+    private final GameService gameService;
+    private final GameRepository gameRepository;
 
     /**
      * Constructor to inject the EventRepository.
      *
      * @param eventRepository the repository to handle event data.
      */
-    public EventService(EventRepository eventRepository, UserService userService) {
+    public EventService(EventRepository eventRepository, UserService userService, GameService gameService, GameRepository gameRepository) {
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.gameService = gameService;
+        this.gameRepository = gameRepository;
     }
 
     /**
@@ -45,14 +53,12 @@ public class EventService {
      * @throws RuntimeException         if the event name already exists.
      */
     public EventDTO createEvent(EventDTO dto) {
-        // Todo: Validate input
         String name = dto.getName();
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Event name cannot be empty");
         }
         if (eventRepository.existsByName(name)) {
-            // logger.warn("Attempted to create event with existing event name: {}", name);
-            throw new RuntimeException("Event name already exists");
+            throw new ResourceAlreadyExistsException("Event name already exists");
         }
 
         // Create EventEntity
@@ -108,9 +114,6 @@ public class EventService {
      */
     public EventDTO saveEvent(EventDTO dto) { // (save creates a new entity if ID is not set)
         EventEntity event = convertToEntity(dto);
-        System.out.println("dto id: " + dto.getId());
-        System.out.println("entity id: " + event.getId());
-
         EventEntity savedEvent = eventRepository.save(event);
         return convertToDTO(savedEvent);
     }
@@ -125,7 +128,7 @@ public class EventService {
         EventEntity event = eventRepository.findById(Long.valueOf(id))
                 .orElseThrow(); // todo: -> new EntityNotFoundException("Event not found"));
 
-        // Remove the event from all users' attendingEvents sets
+        // Remove the event from all users attendingEvents sets
         event.getAttendees().forEach(user -> {
             user.getAttendingEvents().remove(event);
         });
@@ -133,7 +136,7 @@ public class EventService {
         // Clear the attendees set
         event.getAttendees().clear();
 
-        // Now you can safely delete the event
+        // delete the event
         eventRepository.delete(event);
     }
 
@@ -141,30 +144,11 @@ public class EventService {
         return eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
     }
 
-/*
-    @Transactional
-    public void deleteEvent(Long eventId) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
-
-        // Remove the event from all users' attendingEvents sets
-        event.getAttendees().forEach(user -> {
-            user.getAttendingEvents().remove(event);
-        });
-
-        // Clear the attendees set
-        event.getAttendees().clear();
-
-        // Now you can safely delete the event
-        eventRepository.delete(event);
-    }
-
- */
 
     /**
      * Deletes all events from the database.
      */
-    public void deleteAllEvents() {
+    private void deleteAllEvents() {
         eventRepository.deleteAll();
     }
 
@@ -182,6 +166,10 @@ public class EventService {
         dto.setEndDate(entity.getEndDateTime().toLocalDate());
         dto.setStartTime(entity.getStartDateTime().toLocalTime());
         dto.setEndTime(entity.getEndDateTime().toLocalTime());
+
+        GameEntity gameEntity = entity.getGame();
+        GameDTO gameDTO = gameService.getGameById(String.valueOf(gameEntity.getId())).orElseThrow();
+        dto.setGame(gameDTO);
 
         dto.setAttendees(entity.getAttendees().stream()
                 .map(userService::convertToDTO)
@@ -204,8 +192,17 @@ public class EventService {
         entity.setName(dto.getName());
         entity.setStartDateTime(combineDateAndTime(dto.getStartDate(), dto.getStartTime()));
         entity.setEndDateTime(combineDateAndTime(dto.getEndDate(), dto.getEndTime()));
+
+        // extract the game entity
+        GameEntity game = gameRepository.findByName(dto.getGame().getName());
+        if (game == null) {
+            throw new RuntimeException("Game not found: " + dto.getGame());
+        }
+        entity.setGame(game);
+
         return entity;
     }
+
 
     /**
      * Combines a LocalDate and a LocalTime into a LocalDateTime.

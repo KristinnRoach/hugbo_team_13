@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+    <title th:text="${game.getName()}">Game Profile</title>
+</head>
+<body>
+<div class="flex-column profile" th:fragment="section">
+
+    <!-- Game Info -->
+
+    <h1 class="page-title" th:text="${game.getName()}">Game Profile</h1>
+    <p><strong>Platform:</strong> <span th:text="${game.getPlatform()}">Platform</span></p>
+    <div class="form-group" style="text-align: center">
+        <p><strong>Ranking System:</strong></p>
+        <p th:text="${'Beginner: ' + game.ranks[0]}">Low</p>
+        <p th:text="${'Average: ' + game.ranks[1]}">Mid</p>
+        <p th:text="${'Pro: ' + game.ranks[2]}">High</p>
+    </div>
+
+    <!-- Picture Display -->
+    <div class="picture-container" style="padding: 1rem">
+        <img th:if="${game.getImg() != null}"
+             th:src="@{'/game/' + ${game.getId()} + '/img'}"
+             alt="Game Image"
+             style="max-width: 300px; margin: 0 auto; padding: 1rem; display: flex; justify-content: center; align-items: center"/>
+
+        <!-- Message when no picture exists -->
+        <p th:unless="${game.getImg() != null}">No images available for this game</p>
+
+        <!-- Todo: Only link to edit page if admin -->
+        <div style="text-align: center;" th:if="${session.loggedInUser}">
+            <a th:href="@{/game/{id}/edit(id=${game.id})}">Edit game</a>
+        </div>
+
+    </div>
+
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
+
+</div>
+</body>
+</html>

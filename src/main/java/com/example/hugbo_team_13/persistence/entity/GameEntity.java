@@ -25,6 +25,7 @@ public class GameEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="game_id", nullable = false)
     private Long id;
 
     /**
@@ -42,6 +43,20 @@ public class GameEntity {
     private String platform;
 
     /**
+     * An image associated with the game.
+     * Stored as a byte array.
+     */
+    @Lob
+    @Column(name = "img")
+    private byte[] img;
+
+    /**
+     *  The image type (e.g., "image/jpeg")
+     */
+    private String imgType;
+
+
+    /**
      * The associated ranking system for the game.
      * This is a one-to-one relationship with {@link RankEntity}.
      * The relationship is mapped by the "game" field in the {@link RankEntity} class.
@@ -55,6 +70,8 @@ public class GameEntity {
     @Column(name = "rank_name") // Column for the map's value
     private Map<Integer, String> ranks = new HashMap<>();
 
+}
+/*
     public Map<Integer, String> getRanks() {
         return ranks;
     }
@@ -63,7 +80,7 @@ public class GameEntity {
         this.ranks = ranks;
     }
 }
-
+*/
 /* IF we want to get rid of the RankEntity:
 
 ....@Column(nullable = false)

@@ -7,6 +7,7 @@
 <div class="flex-column" th:fragment="section">
 
     <h1 class="page-title">Update Event</h1>
+    <div class="error-message" th:if="${error}" th:text="${error}"></div>
 
     <!-- Editable form if an admin of this event is logged in // th:if="${event.adminIDs contains session.loggedInUser.id }" -->
 
@@ -44,6 +45,13 @@
             </div>
 
             <button type="submit" class="btn">Save Changes</button>
+        </form>
+
+        <br/>
+
+        <form th:action="@{/event/{id}(id=${event.id})}" method="post" style="display: inline;">
+            <input type="hidden" name="_method" value="DELETE"/>
+            <button style="color: darkred" type="submit">Delete Event</button>
         </form>
 
     </th:block>

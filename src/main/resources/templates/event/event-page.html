@@ -13,9 +13,11 @@
 
     <!-- Event details (draft) -->
 
-        <p><strong>Event name:</strong> <span th:text="${event.name}">Event</span></p>
-        <p><strong>Date:</strong> <span th:text="${event.startDate}">Date</span></p>
-        <p><strong>Time:</strong> <span th:text="${event.startTime}">Date</span></p>
+    <p><strong>Event name:</strong> <span th:text="${event.name}">Event</span></p>
+    <p><strong>Event Game:</strong> <a th:href="@{/game/{id}(id=${event.getGame().getId()})}" th:text="${event.getGame().getName()}">Event</a></p>
+
+    <p><strong>Date:</strong> <span th:text="${event.startDate}">Date</span></p>
+    <p><strong>Time:</strong> <span th:text="${event.startTime}">Date</span></p>
 
     <a th:href="@{/event/{id}/attending(id=${event.id})}">Attending: </a> <span th:text="${event.attendees.size()}"> </span>
 
@@ -25,6 +27,8 @@
     <form th:action="@{/event/{id}/attend(id=${event.id})}" method="post">
         <button type="submit" class="btn">Attend Event</button>
     </form>
+
+    <a href="javascript:history.back()" class="back-button">Go Back</a>
 
 </div>
 </body>

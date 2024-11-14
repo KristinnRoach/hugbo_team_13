@@ -1,8 +1,6 @@
 package com.example.hugbo_team_13.persistence.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +36,17 @@ public class EventEntity {
      */
     @Column(nullable = false)
     private String name;
+
+    /**
+     * The game associated with this event.
+     * Many events can be associated with one game.
+     */
+    @ManyToOne
+    @JoinColumn(name = "game_id", nullable = false)
+    private GameEntity game;
+
+    //  private String game;
+
 
     /**
      * The start date and time of the event.

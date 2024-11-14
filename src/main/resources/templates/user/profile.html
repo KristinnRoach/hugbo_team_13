@@ -8,74 +8,27 @@
 
 <h1 class="page-title">User Profile</h1>
 
-    <!-- Read-only ID (to be removed in production)-->
-    <p><strong>ID:</strong> <span th:text="${user.id}">ID</span></p>
-
-    <!-- Read-only view of profile -->
-
-    <th:block >
         <p><strong>Username:</strong> <span th:text="${user.username}">Username</span></p>
         <p><strong>Email:</strong> <span th:text="${user.email}">Email</span></p>
 
-        <img th:if="${user.profilePicture}"
-             th:src="@{/user/{id}/profile-picture(id=${user.id})}"
-             alt="Current Profile Picture"
-             style="max-width: 200px; margin-top: 10px;"/>
+        <!-- Profile Picture Display -->
+        <div class="profile-picture-container" style="padding: 1rem">
+            <img th:if="${user.profilePicture != null}"
+                 th:src="@{'/user/' + ${user.id} + '/profile-picture'}"
+                 alt="Profile Picture"
+                 style="max-width: 300px; margin: 0 auto; padding: 1rem; display: flex; justify-content: center; align-items: center"/>
 
-        <p th:unless="${user.profilePicture}">No profile picture available</p>
+            <!-- Message when no picture exists -->
+            <p th:unless="${user.profilePicture != null}">No profile picture available</p>
 
-    </th:block>
-
-    <!-- Editable form if the user of this profile is logged in -->
-    <!--
-    <th:block th:if="${session.loggedInUser.id == user.id}">
-        <form class="flex-column"
-              th:action="@{/user/{id}(id=${user.id})}"
-              method="post"
-              th:object="${user}">
-            <input type="hidden" name="_method" value="PUT"/>
-
-            <div class="form-group">
-                <label for="username"><strong>Username:</strong></label>
-                <input type="text" id="username" name="username" th:value="*{username}" required/>
+            <!-- Link to edit page -->
+            <div style="text-align: center;" th:if="${session.loggedInUser.id == user.id}">
+                <a th:href="@{/user/{id}/edit(id=${user.id})}">Edit Profile</a>
             </div>
 
-            <div class="form-group">
-                <label for="email"><strong>Email:</strong></label>
-                <input type="email" id="email" name="email" th:value="*{email}" required/>
-            </div>
+        </div>
 
-            <button type="submit" class="btn">Save Changes</button>
-        </form>
-
-
-        <form class="flex-column"
-              th:action="@{/user/{id}/profile-picture(id=${user.id})}"
-              method="post"
-              enctype="multipart/form-data">
-            <input type="hidden" name="_method" value="PUT"/>
-
-            <div class="form-group">
-                <label for="profilePicture"><strong>Profile Picture:</strong></label>
-                <input type="file" id="profilePicture" name="file" accept="image/*"/>
-
-              <img th:if="${user.profilePicture}"
-                   th:src="@{/user/{id}/profile-picture(id=${user.id})}"
-                   alt="Current Profile Picture"
-                   style="max-width: 200px; margin-top: 10px;"/>
-            </div>
-
-            <button type="submit" class="btn">Update Profile Picture</button>
-        </form>
-
-        <form th:if="${user.id == session.loggedInUser.id}" th:action="@{/user/{id}(id=${user.id})}" method="post" style="display: inline;">
-            <input type="hidden" name="_method" value="DELETE"/>
-            <button style="color: darkred" type="submit">Delete Account</button>
-        </form>
-
-    </th:block>
--->
-        <a href="/">Back to homepage</a>
+    <a href="/">Back to homepage</a>
 
     </div>
 </body>
