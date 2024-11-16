@@ -127,6 +127,10 @@ public class UserService {
         if (newDTO.getEmail() != null) {
             user.setEmail(newDTO.getEmail());
         }
+        if (newDTO.getPassword() != null) {
+            user.setPassword(newDTO.getPassword());
+        }
+
 
         // note: the profile picture is handled in updateProfilePicture
 

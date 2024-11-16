@@ -39,6 +39,8 @@ public class UserDTO {
     */
     public byte[] profilePicture;
 
+    public String password;
+
     public String profilePictureType;
 
 }
