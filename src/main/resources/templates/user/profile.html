@@ -22,10 +22,22 @@
             <p th:unless="${user.profilePicture != null}">No profile picture available</p>
 
             <!-- Link to edit page -->
-            <th:block th:if="${session.loggedInUser != null}">
-            <div style="text-align: center;" th:if="${session.loggedInUser.id == user.id}">
-                <a th:href="@{/user/{id}/edit(id=${user.id})}">Edit Profile</a>
-            </div>
+            <th:block th:if="${session.loggedInUser != null and friendship != null}">
+                <th:block th:if="${friendship}">
+                    <form th:action="@{/user/friends/remove/{id}(id=${user.id})}" method="post">
+                        <button type="submit" class="btn">Remove friend</button>
+                    </form>
+                </th:block>
+                <th:block th:if="${!(friendship) and session.loggedInUser.id != user.id}">
+                    <form th:action="@{/user/friends/add/{id}(id=${user.id})}" method="post">
+                        <button type="submit" class="btn">Add as friend</button>
+                    </form>
+                </th:block>
+
+                <div style="text-align: center;" th:if="${session.loggedInUser.id == user.id}">
+                    <p><a th:href="@{/user/friends}">View my friends list</a></p>
+                    <p></p><a th:href="@{/user/{id}/edit(id=${user.id})}">Edit Profile</a></p>
+                </div>
             </th:block>
 
         </div>

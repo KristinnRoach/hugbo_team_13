@@ -69,6 +69,23 @@ public class UserEntity {
     @Column(name = "profile_picture")
     private byte[] profilePicture;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_following",
+            joinColumns = @JoinColumn(name = "friend_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id")
+    )
+    private Set<UserEntity> friends = new HashSet<>();
+
+    public void friend(UserEntity user) {
+        this.friends.add(user);
+    }
+
+    public void unfriend(UserEntity user) {
+        this.friends.remove(user);
+    }
+
+
     /**
      *  The profile picture type (e.g., "image/jpeg")
      */

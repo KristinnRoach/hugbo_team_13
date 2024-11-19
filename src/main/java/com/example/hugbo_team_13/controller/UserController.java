@@ -153,7 +153,41 @@ public class UserController {
         }
         List<UserDTO> users = userService.getAllUsers();
         model.addAttribute("users", users);
+        UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+        List<UserDTO> friendsList = userService.getAllFriends(Long.parseLong(user.getId()));
+        model.addAttribute("friends", friendsList);
         return "user/list";
+    }
+
+    @GetMapping("/friends")
+    public String getAllFriends(HttpSession session, Model model){
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
+        UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+        List<UserDTO> friendsList = userService.getAllFriends(Long.parseLong(user.getId()));
+        model.addAttribute("friends", friendsList);
+        return "user/friends";
+    }
+
+    @PostMapping("/friends/add/{id}")
+    public String addFriend(@PathVariable String id, HttpSession session, Model model){
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
+        UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+        userService.addFriend(Long.parseLong(user.getId()), Long.parseLong(id));
+        return "redirect:/user/friends";
+    }
+
+    @PostMapping("/friends/remove/{id}")
+    public String removeFriend(@PathVariable String id, HttpSession session, Model model){
+        if (session.getAttribute("loggedInUser") == null) {
+            return "redirect:/user/login";
+        }
+        UserDTO user = (UserDTO) session.getAttribute("loggedInUser");
+        userService.removeFriend(Long.parseLong(user.getId()), Long.parseLong(id));
+        return "redirect:/user/friends";
     }
 
     /**
@@ -164,8 +198,13 @@ public class UserController {
      * @return the view name for the user profile page or not found page if user does not exist
      */
     @GetMapping("/{id}")
-    public String getUserPage(@PathVariable String id, Model model) {
+    public String getUserPage(HttpSession session, @PathVariable String id, Model model) {
         Optional<UserDTO> user = userService.getUserById(id);
+        if(session.getAttribute("loggedInUser") != null) {
+            Long userId = Long.parseLong(((UserDTO) session.getAttribute("loggedInUser")).getId());
+            model.addAttribute("friendship", userService.isFriend(userId, Long.parseLong(id)));
+            System.out.println("HALLO" + userService.isFriend(userId, Long.parseLong(id)));
+        }
         return user.map(value -> {
             model.addAttribute("user", value);
             return "user/profile";

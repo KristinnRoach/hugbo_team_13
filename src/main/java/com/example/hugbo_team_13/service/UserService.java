@@ -1,6 +1,5 @@
 package com.example.hugbo_team_13.service;
 
-import com.example.hugbo_team_13.converter.FileConverter;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.helper.PictureData;
@@ -227,6 +226,52 @@ public class UserService {
         }
 
         return dto;
+    }
+
+    public boolean isFriend(Long userId, Long friendId) {
+        // Fetch the user by ID
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Fetch the friend by ID
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("Friend not found"));
+
+        // Check if the user is following the friend
+        return user.getFriends().contains(friend);
+    }
+
+    public void addFriend(Long userId, Long friendId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("Following user not found"));
+
+        user.friend(friend);
+        userRepository.save(user);
+    }
+
+    public void removeFriend(Long userId, Long friendId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+
+        UserEntity friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("Following user not found"));
+
+        user.unfriend(friend);
+        userRepository.save(user);
+    }
+
+    public List<UserDTO> getAllFriends(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.getFriends();
+        List<UserDTO> listi = new ArrayList<>();
+        for(UserEntity entity : user.getFriends()){
+            listi.add(convertToDTO(entity));
+        }
+        return listi;
     }
 
 

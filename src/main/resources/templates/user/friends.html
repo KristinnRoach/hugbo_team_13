@@ -1,0 +1,36 @@
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::section})}">
+<head>
+  <title>User List</title>
+</head>
+<body>
+<div th:fragment="section" class="flex-column">
+  <h1 class="page-title">Friend List</h1>
+  <table>
+    <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="friend : ${friends}">
+      <td th:text="${friend.username}">Username</td>
+      <td th:text="${friend.email}">Email</td>
+
+      <td th:if="${session.loggedInUser}">
+        <a th:href="@{/user/{id}(id=${friend.id})}">View</a>
+      </td>
+      <td>
+        <form th:action="@{/user/friends/remove/{id}(id=${friend.id})}" method="post">
+          <button type="submit" class="btn">Remove friend</button>
+        </form>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+  <a href="javascript:history.back()" class="back-button">Go Back</a>
+</div>
+</body>
+</html>
