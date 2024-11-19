@@ -7,6 +7,7 @@ import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
+import jdk.jfr.Event;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,6 +100,16 @@ public class EventService {
         List<EventDTO> eventDTOs = new ArrayList<>();
 
         for (EventEntity event : eventEntities) {
+            eventDTOs.add(convertToDTO(event));
+        }
+        return eventDTOs;
+    }
+
+    public List<EventDTO> getEventsByUserId(long id) {
+        List<EventEntity> eventEntities = eventRepository.findByAttendeesId(id);
+        List<EventDTO> eventDTOs = new ArrayList<>();
+
+        for(EventEntity event : eventEntities){
             eventDTOs.add(convertToDTO(event));
         }
         return eventDTOs;

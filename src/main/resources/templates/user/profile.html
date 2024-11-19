@@ -22,9 +22,11 @@
             <p th:unless="${user.profilePicture != null}">No profile picture available</p>
 
             <!-- Link to edit page -->
+            <th:block th:if="${session.loggedInUser != null}">
             <div style="text-align: center;" th:if="${session.loggedInUser.id == user.id}">
                 <a th:href="@{/user/{id}/edit(id=${user.id})}">Edit Profile</a>
             </div>
+            </th:block>
 
         </div>
 

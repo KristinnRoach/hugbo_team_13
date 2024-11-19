@@ -38,4 +38,6 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     List<EventEntity> findByGameId(Long gameId);
 
     List<EventEntity> findByStartDateTimeBetweenAndGameId(LocalDateTime startDateTime, LocalDateTime endDateTime, Long id);
+
+    List<EventEntity> findByAttendeesId(Long userId);
 }

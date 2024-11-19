@@ -9,9 +9,40 @@
     <th:block th:unless="${session.loggedInUser != null}">
     <h1 class="page-title">Welcome to Skill-Share!</h1>
     <p>Please <a href="user/login">log in</a> or <a href="user/signup">sign up</a> to continue</p>
-   </th:block> <th:block th:if="${session.loggedInUser != null}">
-      <h1 class="page-title" th:text="'Welcome back, ' + ${session.loggedInUser.username}"/>
    </th:block>
+      <th:block th:if="${session.loggedInUser != null}">
+      <h1 class="page-title" th:text="'Welcome back, ' + ${session.loggedInUser.username}"/>
+      <a th:href="@{/user/{id}(id=${session.loggedInUser.id})}">My Profile</a>
+      <th:block th:if="${events.size() > 0}">
+          <h3>Your attending events:</h3>
+      <table>
+          <thead>
+          <tr>
+              <th>Event Name</th>
+              <th>Game</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="event : ${events}">
+              <td th:text="${event.getName()}">Event Name</td>
+              <td th:text="${event.getGame().getName()}">Game</td>
+              <td th:text="${event.getStartDate()}">Start Date</td>
+              <td th:text="${event.getEndDate()}">End Date</td>
+              <td th:text="${event.getStartTime()}">Start Time</td>
+              <td th:text="${event.getEndTime()}">End Time</td>
+          </tr>
+          </tbody>
+      </table>
+      </th:block>
+      <th:block th:unless="${events.size() > 0}">
+          <h3>Your attending events will be displayed here.</h3>
+      </th:block>
+   </th:block>
+
   </section>
  </body>
 </html>

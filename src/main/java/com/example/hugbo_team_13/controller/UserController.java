@@ -76,7 +76,8 @@ public class UserController {
     public String login(@Valid @ModelAttribute("loginDTO") UserLoginDTO loginDTO,
                         BindingResult bindingResult,
                         HttpSession session,
-                        Model model) {
+                        Model model,
+                        RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "user/login";
         }
@@ -84,7 +85,7 @@ public class UserController {
             UserDTO user = userService.login(loginDTO.getUsername(), loginDTO.getPassword());
             if (user != null) {
                 session.setAttribute("loggedInUser", user);
-                return "redirect:/user/" + user.getId();
+                return "redirect:/";
             } else {
                 model.addAttribute("error", "Invalid username or password");
                 return "user/login";
