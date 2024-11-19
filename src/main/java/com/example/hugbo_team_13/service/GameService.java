@@ -24,7 +24,7 @@ public class GameService {
 
     /**
      * Constructor to inject the repositories.
-     * 
+     *
      * @param gameRepository the repository to handle game data.
      * @param rankRepository the repository to handle rank data.
      */
@@ -35,11 +35,11 @@ public class GameService {
     /**
      * Creates a new game from the provided GameDTO.
      * Validates the game name to ensure it is not null or empty and that it does not already exist.
-     * 
+     *
      * @param gameDTO the data transfer object (DTO) representing the game.
      * @return the created GameDTO object.
      * @throws IllegalArgumentException if the game name is missing.
-     * @throws RuntimeException if a game with the same name already exists.
+     * @throws RuntimeException         if a game with the same name already exists.
      */
     public GameDTO createGame(GameDTO gameDTO) {
         String name = gameDTO.getName();
@@ -60,10 +60,8 @@ public class GameService {
     }
 
 
-
     /**
      * Retrieves a game by its ID.
-     *
      *
      * @param id the ID of the game
      * @return an Optional containing the GameDTO if found, or empty if not.
@@ -74,7 +72,7 @@ public class GameService {
 
     /**
      * Retrieves a game by its name.
-     * 
+     *
      * @param name the name of the game.
      * @return the GameDTO if found, or null if no game is found.
      */
@@ -85,7 +83,7 @@ public class GameService {
 
     /**
      * Retrieves all games.
-     * 
+     *
      * @return a list of GameDTOs representing all games.
      */
     public List<GameDTO> getAllGames() {
@@ -95,7 +93,7 @@ public class GameService {
 
     /**
      * Updates an existing game if it exists.
-     * 
+     *
      * @param gameDTO the data transfer object (DTO) representing the game.
      * @return true if the game was updated successfully, false otherwise.
      * @throws IllegalArgumentException if the game name is missing or no game is found with that name.
@@ -156,7 +154,7 @@ public class GameService {
 
     /**
      * Deletes a game by its ID.
-     * 
+     *
      * @param id the ID of the game to delete.
      */
     public void deleteGame(String id) {
@@ -166,7 +164,7 @@ public class GameService {
 
     /**
      * Creates a GameEntity from a GameDTO.
-     * 
+     *
      * @param dto the GameDTO to convert.
      * @return the corresponding GameEntity.
      */
@@ -177,5 +175,7 @@ public class GameService {
         game.setRanks(dto.getRanks());
         return game;
     }
+
+
 }
 

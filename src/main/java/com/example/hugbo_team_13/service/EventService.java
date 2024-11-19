@@ -3,7 +3,6 @@ package com.example.hugbo_team_13.service;
 
 import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
-//import com. example. hugbo_team_13.exception._ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
@@ -15,7 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,7 +57,7 @@ public class EventService {
             throw new IllegalArgumentException("Event name cannot be empty");
         }
         if (eventRepository.existsByName(name)) {
-           throw new Exception("Event name already exists"); // ResourceAlreadyExistsException("Event name already exists");
+            throw new Exception("Event name already exists"); // ResourceAlreadyExistsException("Event name already exists");
         }
 
         // Create EventEntity
@@ -140,12 +138,36 @@ public class EventService {
         // delete the event
         eventRepository.delete(event);
     }
-
-    public List<EventDTO> findEventsByDateRange(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        List<EventEntity> entities = eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
-        return entities.stream().map(this::convertToDTO).toList();
+    
+    /**
+     * Retrieves a list of events based on optional filtering criteria.
+     *
+     * @param startDateTime the start date and time for the range filter; can be {@code null}.
+     * @param endDateTime   the end date and time for the range filter; can be {@code null}.
+     * @param gameId        the ID of the game for filtering events; can be {@code null}.
+     * @return a list of {@link EventDTO} objects that match the specified criteria:
+     * <ul>
+     *     <li>If all parameters are provided, it returns events matching the date range and game ID.</li>
+     *     <li>If only the date range is provided, it returns events within the date range.</li>
+     *     <li>If only the game ID is provided, it returns events associated with the game ID.</li>
+     *     <li>If no parameters are provided, it returns all events.</li>
+     * </ul>
+     */
+    public List<EventDTO> findEvents(LocalDateTime startDateTime, LocalDateTime endDateTime, Long gameId) {
+        if (startDateTime != null && endDateTime != null && gameId != null) {
+            List<EventEntity> entities = eventRepository.findByStartDateTimeBetweenAndGameId(startDateTime, endDateTime, Long.valueOf(String.valueOf(gameId)));
+            return entities.stream().map(this::convertToDTO).toList();
+        } else if (startDateTime != null && endDateTime != null) {
+            List<EventEntity> entities = eventRepository.findAllByStartDateTimeBetween(startDateTime, endDateTime);
+            return entities.stream().map(this::convertToDTO).toList();
+        } else if (gameId != null) {
+            List<EventEntity> entities = eventRepository.findByGameId(Long.valueOf(String.valueOf(gameId)));
+            return entities.stream().map(this::convertToDTO).toList();
+        } else {
+            List<EventEntity> entities = eventRepository.findAll();
+            return entities.stream().map(this::convertToDTO).toList();
+        }
     }
-
 
     /**
      * Deletes all events from the database.
@@ -155,7 +177,6 @@ public class EventService {
     }
 
     /**
-     *
      * @param entity the EventEntity to convert.
      * @return the corresponding EventDTO.
      */

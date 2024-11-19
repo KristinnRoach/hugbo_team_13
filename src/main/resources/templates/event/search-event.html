@@ -17,13 +17,24 @@
 
             <div class="form-group">
                 <label for="startDate"><strong>Search events between:</strong></label>
-                <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required/>
+                <input type="date" id="startDate" name="startDate" th:value="*{startDate}"/>
             </div>
 
             <div class="form-group">
                 <label for="endDate"><strong>and:</strong></label>
-                <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required/>
+                <input type="date" id="endDate" name="endDate" th:value="*{endDate}"/>
             </div>
+
+            <!-- Game Dropdown -->
+            <label for="gameId">Game:</label>
+            <select id="gameId" name="gameId">
+                <option value="">-- Select a Game --</option>
+                <option th:each="game : ${games}"
+                        th:value="${game.id}"
+                        th:text="${game.name}"
+                        th:selected="${game.id == selectedGame?.id}">
+                </option>
+            </select>
 
             <button type="submit" class="btn">Search Event</button>
         </form>
