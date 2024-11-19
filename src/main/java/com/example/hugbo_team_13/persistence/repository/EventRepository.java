@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing {@link EventEntity} objects in the database.
@@ -33,4 +34,8 @@ public interface EventRepository extends JpaRepository<EventEntity, Long> {
     boolean existsByName(String name);
 
     List<EventEntity> findAllByStartDateTimeBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    List<EventEntity> findByGameId(Long gameId);
+
+    List<EventEntity> findByStartDateTimeBetweenAndGameId(LocalDateTime startDateTime, LocalDateTime endDateTime, Long id);
 }

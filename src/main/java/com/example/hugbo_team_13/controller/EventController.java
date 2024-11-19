@@ -3,7 +3,6 @@ package com.example.hugbo_team_13.controller;
 import com.example.hugbo_team_13.dto.EventDTO;
 import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
-// import com.example.hugbo_team_13.exception.ResourceAlreadyExistsException;
 import com.example.hugbo_team_13.service.EventService;
 import com.example.hugbo_team_13.service.GameService;
 import com.example.hugbo_team_13.service.UserService;
@@ -85,28 +84,63 @@ public class EventController {
         return "event/create";
     }
 
+    /**
+     * Displays the search event form, allowing users to filter events by date range or game.
+     *
+     * @param session the {@link HttpSession} object used to check if a user is logged in.
+     * @param model   the {@link Model} object used to add attributes to the view.
+     * @return the name of the view template for the search event form:
+     * <ul>
+     *     <li>If the user is not logged in, redirects to the login page (`/user/login`).</li>
+     *     <li>Otherwise, returns the view name for the search event form (`event/search-event`).</li>
+     * </ul>
+     */
     @GetMapping("/search-event")
     public String getSearchEventForm(HttpSession session, Model model) {
         if (session.getAttribute("loggedInUser") == null) {
             return "redirect:/user/login";
         }
+
         model.addAttribute("event", new EventDTO());
+
+        List<GameDTO> games = gameService.getAllGames();
+        model.addAttribute("games", games);
+
         return "event/search-event";
     }
 
+    /**
+     * Retrieves search results based on optional filters such as date range and game ID.
+     * Processes the input parameters to generate a list of matching events and passes the results to the view.
+     *
+     * @param startDate the start date for the search filter (optional); can be {@code null}.
+     * @param endDate   the end date for the search filter (optional); can be {@code null}.
+     * @param id        the game ID as a {@link String} for filtering events (optional); can be {@code null} or empty.
+     * @param model     the {@link Model} object used to add attributes to the view.
+     * @return the name of the view template for the search results page (`event/search-results`).
+     */
     @GetMapping("/search-results")
     public String getSearchResults(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(value = "gameId", required = false) String id,
             Model model) {
 
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
 
+        if (startDate != null) {
+            startDateTime = startDate.atStartOfDay();  // Set start of the day if startDate is not null
+        }
+        if (endDate != null) {
+            endDateTime = endDate.atTime(LocalTime.MAX);  // Set end of the day if endDate is not null
+        }
+        Long gameIdLong = (id != null && !id.isEmpty()) ? Long.parseLong(id) : null;
 
-        List<EventDTO> events = eventService.findEventsByDateRange(startDateTime, endDateTime);
+        List<EventDTO> events = eventService.findEvents(startDateTime, endDateTime, gameIdLong);
 
-        // Add events to the model
+        // Add events and games to the model
+
         model.addAttribute("events", events);
 
         return "event/search-results";  // View name for the search results page
@@ -135,7 +169,6 @@ public class EventController {
             return "event/create";  // Stay on form with error message
         }
     }
-
 
 
     /**
