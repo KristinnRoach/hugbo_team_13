@@ -7,6 +7,8 @@ target/
 ### persistent data ###
 /data
 
+.env
+
 ### Mac drasl ###
 **/*.DS_Store
 

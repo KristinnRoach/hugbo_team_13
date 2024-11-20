@@ -1,0 +1,122 @@
+/Users/kristinnroachgunnarsson/Desktop/Haust2024/HugbóVerk1/hugbo_team_13/
+├── .DS_Store
+├─] .env (ignored)
+├── .github/
+│   └── workflows/
+│       └── main.yml
+├── .gitignore
+├─] .idea/ (ignored)
+├── .mvn/
+│   └── wrapper/
+│       └── maven-wrapper.properties
+├── Assignments-docs/
+│   ├── Assignment 1 Inception.pdf
+│   ├── Assignments501G.pdf
+│   ├── Team 13 - Elaboration.pdf
+│   ├── V1.pdf
+│   └── V2.pdf
+├── Dockerfile
+├── README.txt
+├── RankSystemShowcase
+├─] data/ (ignored)
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+├── project-file-structure-3-okt
+├── src/
+│   ├── .DS_Store
+│   ├── main/
+│   │   ├── .DS_Store
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── example/
+│   │   │           └── hugbo_team_13/
+│   │   │               ├── HugboTeam13Application.java
+│   │   │               ├── controller/
+│   │   │               │   ├── EventController.java
+│   │   │               │   ├── GameController.java
+│   │   │               │   ├── HomeController.java
+│   │   │               │   └── UserController.java
+│   │   │               ├── converter/
+│   │   │               │   └── FileConverter.java
+│   │   │               ├── dto/
+│   │   │               │   ├── EventDTO.java
+│   │   │               │   ├── FileUploadDTO.java
+│   │   │               │   ├── GameCreateDTO.java
+│   │   │               │   ├── GameDTO.java
+│   │   │               │   ├── UserDTO.java
+│   │   │               │   ├── UserLoginDTO.java
+│   │   │               │   └── UserSignupDTO.java
+│   │   │               ├── exception/
+│   │   │               │   ├── GlobalExceptionHandler.java
+│   │   │               │   └── ResourceAlreadyExistsException.java
+│   │   │               ├── helper/
+│   │   │               │   └── PictureData.java
+│   │   │               ├── persistence/
+│   │   │               │   ├── entity/
+│   │   │               │   │   ├── EventEntity.java
+│   │   │               │   │   ├── GameEntity.java
+│   │   │               │   │   ├── RankEntity.java
+│   │   │               │   │   └── UserEntity.java
+│   │   │               │   └── repository/
+│   │   │               │       ├── EventRepository.java
+│   │   │               │       ├── GameRepository.java
+│   │   │               │       ├── RankRepository.java
+│   │   │               │       └── UserRepository.java
+│   │   │               └── service/
+│   │   │                   ├── EventService.java
+│   │   │                   ├── GameService.java
+│   │   │                   └── UserService.java
+│   │   └── resources/
+│   │       ├── .DS_Store
+│   │       ├── application.properties
+│   │       ├── static/
+│   │       │   ├── .DS_Store
+│   │       │   ├── assets/
+│   │       │   │   ├── boltiRight.jpg
+│   │       │   │   ├── icon-draft.svg
+│   │       │   │   ├── levels_1.svg
+│   │       │   │   └── logo-v1.svg
+│   │       │   ├── css/
+│   │       │   │   ├── component-styles/
+│   │       │   │   │   ├── login.css
+│   │       │   │   │   └── signup.css
+│   │       │   │   └── styles.css
+│   │       └── templates/
+│   │           ├── .DS_Store
+│   │           ├── error.html
+│   │           ├── event/
+│   │           │   ├── attending.html
+│   │           │   ├── create.html
+│   │           │   ├── created.html
+│   │           │   ├── edit-event.html
+│   │           │   ├── event-page.html
+│   │           │   ├── list.html
+│   │           │   ├── notFound.html
+│   │           │   ├── search-event.html
+│   │           │   └── search-results.html
+│   │           ├── game/
+│   │           │   ├── create.html
+│   │           │   ├── edit-game.html
+│   │           │   ├── game-page.html
+│   │           │   └── list.html
+│   │           ├── header-login.txt
+│   │           ├── home.html
+│   │           ├── layout.html
+│   │           └── user/
+│   │               ├── created.html
+│   │               ├── edit-profile.html
+│   │               ├── list.html
+│   │               ├── login.html
+│   │               ├── notFound.html
+│   │               ├── profile.html
+│   │               └── signup.html
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── example/
+│                   └── hugbo_team_13/
+│                       ├── HugboTeam13ApplicationTests.java
+│                       ├── curl-test-commands.txt
+│                       └── port-probs-cmd.txt
+└─] target/ (ignored)
