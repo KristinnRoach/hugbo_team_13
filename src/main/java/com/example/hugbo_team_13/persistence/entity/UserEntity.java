@@ -63,8 +63,9 @@ public class UserEntity {
      * The profile picture of the user.
      * Stored as a byte array.
      */
-    @Lob
+   //  @Lob
     @Column(name = "profile_picture")
+    @Basic(fetch = FetchType.LAZY)
     private byte[] profilePicture;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -48,8 +48,9 @@ public class GameEntity {
      * An image associated with the game.
      * Stored as a byte array.
      */
-    @Lob
+   // @Lob
     @Column(name = "img")
+    @Basic(fetch = FetchType.LAZY)
     private byte[] img;
 
     /**
