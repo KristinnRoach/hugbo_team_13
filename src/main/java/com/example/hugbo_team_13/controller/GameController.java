@@ -1,7 +1,9 @@
 package com.example.hugbo_team_13.controller;
 
 import com.example.hugbo_team_13.dto.GameDTO;
+import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.service.GameService;
+import com.example.hugbo_team_13.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +24,16 @@ import java.io.IOException;
 public class GameController {
 
     private final GameService gameService;
+    private final UserService userService;
 
     /**
      * Constructs a GameController with the specified GameService.
      *
      * @param gameService the service handling game operations
      */
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, UserService userService) {
         this.gameService = gameService;
+        this.userService = userService;
     }
 
 
@@ -98,9 +102,9 @@ public class GameController {
      */
     @PostMapping("/create")
     public String createGame(@ModelAttribute("game") GameDTO gameDTO, HttpSession session, Model model) {
+        gameDTO.setAdmin(userService.convertToEntity((UserDTO) session.getAttribute("loggedInUser")));
         GameDTO savedGame = gameService.createGame(gameDTO);
         model.addAttribute("game", savedGame);
-
         if (session.getAttribute("gameDoesNotExist") != null) {
             return "redirect:/event/create";
         }

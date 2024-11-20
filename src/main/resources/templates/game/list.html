@@ -39,7 +39,9 @@
 
             <td>
                 <a th:href="@{/game/{id}(id=${game.id})}">View</a>
-                <a th:if="${session.loggedInUser != null}" th:href="@{/game/{id}/edit(id=${game.id})}">Edit</a>
+                <th:block th:if="${session.loggedInUser != null}">
+                    <a th:if="${#strings.equals(session.loggedInUser.id, game.admin.id)}" th:href="@{/game/{id}/edit(id=${game.id})}">Edit</a>
+                </th:block>
             </td>
 
         </tr>

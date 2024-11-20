@@ -28,9 +28,11 @@
         <p th:unless="${game.getImg() != null}">No images available for this game</p>
 
         <!-- Todo: Only link to edit page if admin -->
-        <div style="text-align: center;" th:if="${session.loggedInUser}">
+        <th:block th:if="${session.loggedInUser != null}">
+        <div style="text-align: center;" th:if="${#strings.equals(session.loggedInUser.id, game.admin.id)}">
             <a th:href="@{/game/{id}/edit(id=${game.id})}">Edit game</a>
         </div>
+        </th:block>
 
     </div>
 

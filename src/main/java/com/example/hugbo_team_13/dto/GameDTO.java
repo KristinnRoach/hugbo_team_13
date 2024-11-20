@@ -1,6 +1,7 @@
 package com.example.hugbo_team_13.dto;
 
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
+import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +45,8 @@ public class GameDTO {
     private byte[] img;
     private String imgType;
 
+    public UserEntity admin;
+
     /**
      * Mapping of ranks within the game.
      * The key is the rank level, and the value is the description or title of that rank.
@@ -63,5 +66,6 @@ public class GameDTO {
         this.img = gameEntity.getImg();
         this.imgType = gameEntity.getImgType();
         this.description = "No description available yet";
+        this.admin = gameEntity.getAdmin();
     }
 }

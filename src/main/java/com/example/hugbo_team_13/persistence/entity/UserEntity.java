@@ -123,4 +123,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "starter", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<EventEntity> events = new ArrayList<>();
 
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<GameEntity> games = new ArrayList<>();
+
 }

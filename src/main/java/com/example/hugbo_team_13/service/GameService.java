@@ -2,7 +2,9 @@ package com.example.hugbo_team_13.service;
 
 import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.helper.PictureData;
+import com.example.hugbo_team_13.persistence.entity.EventEntity;
 import com.example.hugbo_team_13.persistence.entity.GameEntity;
+import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import com.example.hugbo_team_13.persistence.repository.GameRepository;
 import com.example.hugbo_team_13.persistence.repository.RankRepository;
 import org.springframework.stereotype.Service;
@@ -21,15 +23,16 @@ import java.util.stream.Collectors;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final EventRepository eventRepository;
 
     /**
      * Constructor to inject the repositories.
      *
      * @param gameRepository the repository to handle game data.
-     * @param rankRepository the repository to handle rank data.
      */
-    public GameService(GameRepository gameRepository, RankRepository rankRepository) {
+    public GameService(GameRepository gameRepository, EventRepository eventRepository) {
         this.gameRepository = gameRepository;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -158,7 +161,20 @@ public class GameService {
      * @param id the ID of the game to delete.
      */
     public void deleteGame(String id) {
+        GameEntity game = gameRepository.getReferenceById(Long.parseLong(id));
+        for(EventEntity gameEvent : game.getEvents()){
+            gameEvent.getAttendees().forEach(user -> {
+                user.getAttendingEvents().remove(gameEvent);
+            });
+            // Clear the attendees set
+            gameEvent.getAttendees().clear();
+
+            // delete the event
+            eventRepository.delete(gameEvent);
+        }
+        game.getEvents().clear();
         gameRepository.deleteById(Long.parseLong(id));
+
     }
 
 
@@ -170,6 +186,7 @@ public class GameService {
      */
     private GameEntity createGameEntity(GameDTO dto) {
         GameEntity game = new GameEntity();
+        game.setAdmin(dto.getAdmin());
         game.setName(dto.getName());
         game.setPlatform(dto.getPlatform());
         game.setRanks(dto.getRanks());

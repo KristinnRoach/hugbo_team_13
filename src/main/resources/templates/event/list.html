@@ -45,7 +45,6 @@
             <th:block th:if="${session.loggedInUser}">
                 <td>
                     <a th:href="@{/event/{id}(id=${event.id})}">View</a>
-                    <!-- todo: only admin can edit or delete -->
                     <th:block th:if="${session.loggedInUser.id == event.getStarter().getId()}"><a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a></th:block>
                     <form th:action="@{/event/{id}/attend(id=${event.id})}" method="post">
                         <button type="submit" class="btn">Attend Event</button>
