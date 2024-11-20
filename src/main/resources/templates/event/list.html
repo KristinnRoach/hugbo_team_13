@@ -24,6 +24,7 @@
         <tr>
             <th>Event Name</th>
             <th>Game</th>
+            <th>Host</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Start Time</th>
@@ -36,11 +37,11 @@
         <tr th:each="event : ${events}">
             <td th:text="${event.getName()}">Event Name</td>
             <td th:text="${event.getGame().getName()}">Game</td>
+            <td th:text="${event.getStarter().getUsername()}">Event Name</td>
             <td th:text="${event.getStartDate()}">Start Date</td>
             <td th:text="${event.getEndDate()}">End Date</td>
             <td th:text="${event.getStartTime()}">Start Time</td>
             <td th:text="${event.getEndTime()}">End Time</td>
-            <td th:text="${event.getStarter().getId()}">Event Name</td>
 
             <th:block th:if="${session.loggedInUser}">
                 <td>
