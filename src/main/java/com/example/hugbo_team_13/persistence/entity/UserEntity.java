@@ -4,10 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 /**
  * Entity class representing a user in the application.
@@ -69,7 +67,7 @@ public class UserEntity {
     @Column(name = "profile_picture")
     private byte[] profilePicture;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_following",
             joinColumns = @JoinColumn(name = "friend_id"),
@@ -121,5 +119,8 @@ public class UserEntity {
         attendingEvents.remove(event);
         event.getAttendees().remove(this);
     }
+
+    @OneToMany(mappedBy = "starter", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<EventEntity> events = new ArrayList<>();
 
 }

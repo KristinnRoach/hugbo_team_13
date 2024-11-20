@@ -199,6 +199,7 @@ public class EventService {
         dto.setEndDate(entity.getEndDateTime().toLocalDate());
         dto.setStartTime(entity.getStartDateTime().toLocalTime());
         dto.setEndTime(entity.getEndDateTime().toLocalTime());
+        dto.setStarter(userService.convertToDTO(entity.getStarter()));
 
         GameEntity gameEntity = entity.getGame();
         GameDTO gameDTO = gameService.getGameById(String.valueOf(gameEntity.getId())).orElseThrow();
@@ -223,6 +224,7 @@ public class EventService {
             entity.setId(Long.parseLong(dto.getId()));
         }
         entity.setName(dto.getName());
+        entity.setStarter(userService.convertToEntity(dto.getStarter()));
         entity.setStartDateTime(combineDateAndTime(dto.getStartDate(), dto.getStartTime()));
         entity.setEndDateTime(combineDateAndTime(dto.getEndDate(), dto.getEndTime()));
 

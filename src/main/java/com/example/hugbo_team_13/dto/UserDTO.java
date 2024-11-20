@@ -1,9 +1,13 @@
 package com.example.hugbo_team_13.dto;
 
+import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Data Transfer Object (DTO) representing a user.
@@ -43,4 +47,5 @@ public class UserDTO {
 
     public String profilePictureType;
 
+    public Set<UserEntity> friends = new HashSet<>();
 }

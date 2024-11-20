@@ -34,6 +34,8 @@ public class EventDTO {
      * the game to be played.
      */
     public GameDTO game;
+
+    public UserDTO starter;
     //public String game;
 
     /**

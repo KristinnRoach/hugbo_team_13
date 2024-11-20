@@ -40,14 +40,13 @@
             <td th:text="${event.getEndDate()}">End Date</td>
             <td th:text="${event.getStartTime()}">Start Time</td>
             <td th:text="${event.getEndTime()}">End Time</td>
+            <td th:text="${event.getStarter().getId()}">Event Name</td>
 
             <th:block th:if="${session.loggedInUser}">
-
                 <td>
                     <a th:href="@{/event/{id}(id=${event.id})}">View</a>
                     <!-- todo: only admin can edit or delete -->
-                    <a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a>
-
+                    <th:block th:if="${session.loggedInUser.id == event.getStarter().getId()}"><a th:href="@{/event/{id}/edit(id=${event.id})}">Edit</a></th:block>
                     <form th:action="@{/event/{id}/attend(id=${event.id})}" method="post">
                         <button type="submit" class="btn">Attend Event</button>
                     </form>

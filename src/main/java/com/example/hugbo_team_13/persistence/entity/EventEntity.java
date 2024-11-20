@@ -45,6 +45,10 @@ public class EventEntity {
     @JoinColumn(name = "game_id", nullable = false)
     private GameEntity game;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity starter;
+
     //  private String game;
 
 

@@ -271,7 +271,6 @@ public class UserController {
         }
         session.invalidate();
         sessionStatus.setComplete();
-        session.invalidate();
 
         userService.deleteUser(id);
 

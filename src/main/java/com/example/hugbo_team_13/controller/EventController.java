@@ -7,6 +7,7 @@ import com.example.hugbo_team_13.service.EventService;
 import com.example.hugbo_team_13.service.GameService;
 import com.example.hugbo_team_13.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.catalina.User;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -161,6 +162,7 @@ public class EventController {
             return "redirect:/game/create";
         }
         try {
+            event.setStarter(((UserDTO) session.getAttribute("loggedInUser")));
             eventService.createEvent(event);
             session.removeAttribute("gameDoesNotExist"); // remove if exists
             return "redirect:/event/list";

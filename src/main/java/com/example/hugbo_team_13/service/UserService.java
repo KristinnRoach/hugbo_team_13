@@ -1,17 +1,21 @@
 package com.example.hugbo_team_13.service;
 
+import com.example.hugbo_team_13.dto.GameDTO;
 import com.example.hugbo_team_13.dto.UserDTO;
 import com.example.hugbo_team_13.dto.UserSignupDTO;
 import com.example.hugbo_team_13.helper.PictureData;
 import com.example.hugbo_team_13.persistence.entity.EventEntity;
+import com.example.hugbo_team_13.persistence.entity.GameEntity;
 import com.example.hugbo_team_13.persistence.entity.UserEntity;
 import com.example.hugbo_team_13.persistence.repository.EventRepository;
 import com.example.hugbo_team_13.persistence.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -171,12 +175,20 @@ public class UserService {
 
     /**
      * Deletes a user by their ID.
+     * Deletes every reference other users have to this one as their friend
      *
      * @param id the ID of the user to delete.
      */
+    @Transactional
     public void deleteUser(String id) {
+        UserEntity user = userRepository.findById(Long.parseLong(id)).orElseThrow();
+        for (UserEntity friend : new HashSet<>(user.getFriends())) {
+            friend.getFriends().remove(user); // Remove this user from each friend's list
+        }
+        user.getFriends().clear(); // Clear this user's list of friends
         userRepository.deleteById(Long.parseLong(id));
     }
+
 
     /**
      * Deletes all users from the repository.
@@ -219,6 +231,7 @@ public class UserService {
         dto.setId(strId);
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
+        dto.setFriends(user.getFriends());
 
         if (user.getProfilePicture() != null && user.getProfilePicture().length > 0) {
             dto.setProfilePicture(user.getProfilePicture());
@@ -274,17 +287,17 @@ public class UserService {
         return listi;
     }
 
-
     /**
      * Converts a UserDTO to a UserEntity.
      *
      * @param userDTO the UserDTO to convert.
      * @return the corresponding UserEntity.
      */
-    private UserEntity convertToEntity(UserDTO userDTO) {
+    public UserEntity convertToEntity(UserDTO userDTO) {
         UserEntity user = new UserEntity(userDTO.getUsername(), userDTO.getEmail());
         Long longStr = Long.parseLong(userDTO.getId());
         user.setId(longStr);
+        user.setFriends(userDTO.getFriends());
 
         // Handle profile picture if present in DTO
         if (user.getProfilePicture() != null && user.getProfilePicture().length > 0) {
